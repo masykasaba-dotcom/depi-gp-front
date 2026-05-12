@@ -1,0 +1,82 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+@import "tailwindcss";
+@plugin "daisyui" {
+  
+}
+
+
+
+body { 
+  font-family: 'Times New Roman', Times, serif;
+}
+
+#StartQuizSection {
+  background: 
+    linear-gradient(
+      to right,
+      rgba(39, 39, 39, 0.85) 0%,   
+      rgba(39, 39, 39, 0.6) 20%,  
+      rgba(39, 39, 39, 0.3) 80%,  
+      rgba(39, 39, 39, 0.1) 100%  
+    ),
+    url("./assets/laboratory-science.png");
+
+  background-size: cover;
+  background-position: center;
+}
+
+#sign-in-leftPart{
+  background: 
+    linear-gradient(
+      to left,
+      #0C0A09CC 0%,
+      #0C0A09CC 20%,
+      #0C0A0900 80%
+    ),
+    url("./assets/011bec276d72905b47052cbeea4b8fb230154bca.png");
+  
+  background-size: cover;
+  background-position: center;
+}
+
+#sign-up-leftPart{
+  background: 
+    linear-gradient(
+    
+      #1C19170D 100%
+    ),
+    url("./assets/367c2448a94e4c33cdbcfc4251fc793f96381df2.png");
+  
+  background-size: cover;
+  background-position: center;
+}
+
+.bg-white-50 {
+  color: rgba(255,255, 255, 0.5)
+}
+
+.text-white-70 {
+  color: rgba(255,255, 255, 0.7)
+}
+
+.text-white-80 {
+  color: rgba(255,255, 255, 0.7)
+}
+.active {
+  border-bottom: 1px solid #fff;
+  font-weight: 600;
+  color: #fff;
+}
+
+[data-theme=""] {
+  .active {
+  border-bottom: 1px solid #0F172A;
+  font-weight: 600;
+  color: #0F172A;
+}
+}
+
+
+h1{
+  background-color:  #f5f3f166
+}
