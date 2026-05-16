@@ -1,10 +1,10 @@
 import { useActionState } from "react";
-import Question from "../components/Question";
+import Question from "../features/profile/Question";
 import useGetSurvey from "../hooks/useGetSurvey";
 import axios from "axios";
 import apiUrl from "../lib/apiUrl";
 import { use } from "react";
-import { AuthContext } from "../store/AuthContext";
+import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router";
 
 export default function UpdateSurvey() {

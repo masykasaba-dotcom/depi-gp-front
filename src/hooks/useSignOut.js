@@ -1,6 +1,6 @@
 import React from 'react'
 import { use } from 'react';
-import { AuthContext } from '../store/AuthContext';
+import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from 'react-router';
 import Cookies from "js-cookie";
 export default function useSignOut() {

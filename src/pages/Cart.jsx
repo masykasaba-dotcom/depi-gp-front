@@ -1,8 +1,8 @@
 import { use } from "react";
 import { Link } from "react-router";
-import { CartContext } from "../store/CartContext";
-import CartProduct from "../components/CartProduct";
-import SubmitOrderForm from "../components/SubmitOrderForm";
+import { CartContext } from "../context/CartContext";
+import CartProduct from "../features/cart/CartProduct";
+import SubmitOrderForm from "../features/orders/SubmitOrderForm";
 
 // Mock data to scaffold the UI according to API "get customer cart" needs
 

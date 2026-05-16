@@ -1,2 +1,2 @@
-const apiUrl = "https://depi-gp-production.up.railway.app/api/";
-export default apiUrl
+const apiUrl = import.meta.env.VITE_API_URL;
+export default apiUrl;

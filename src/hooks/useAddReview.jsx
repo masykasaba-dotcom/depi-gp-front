@@ -1,6 +1,6 @@
 import React, { useRef } from 'react'
 import { use } from 'react';
-import { AuthContext } from '../store/AuthContext';
+import { AuthContext } from "../context/AuthContext";
 import axios from 'axios';
 import apiUrl from '../lib/apiUrl';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';

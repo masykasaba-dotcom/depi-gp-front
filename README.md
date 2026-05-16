@@ -32,25 +32,19 @@ The project follows a modular and scalable folder structure inside the `src/` di
 src/
 ├── assets/        # Static assets (images, logos, fonts)
 ├── components/    # Reusable UI components
-│   ├── AuthRoute.jsx / UnAuthRoute.jsx # Route protection
-│   ├── Navbar.jsx / Footer.jsx         # Layout components
-│   ├── Product.jsx / CartProduct.jsx   # Product UI
-│   ├── Forms/                          # SingInForm, SubmitOrderForm, etc.
-│   └── Modals/                         # ConfirmModal, EditModal
+│   ├── layout/    # Navbar, Footer, etc.
+│   ├── routing/   # AuthRoute, UnAuthRoute
+│   └── ui/        # Generic UI elements (Buttons, Inputs, etc.)
+├── context/       # Global Context Providers (AuthContext, CartContext)
+├── features/      # Feature-based modular components (auth, products, orders, home)
 ├── hooks/         # Custom React hooks for shared logic
-├── lib/           # Utility functions and Axios configurations
+├── layouts/       # Main page layout wrappers
+├── lib/           # Utility functions and API configuration (apiUrl.js)
 ├── pages/         # Main route components (Views)
-│   ├── SignIn.jsx / SignUp.jsx         # Authentication views
-│   ├── Home.jsx / ProductsPage.jsx     # Main browsing views
-│   ├── Cart.jsx / Checkout             # Shopping cart and checkout
-│   ├── Profile.jsx / Survey.jsx        # User profile and skin survey
-│   └── Orders.jsx / TrackingOrder.jsx  # Order management
-├── store/         # Global Context Providers
-│   ├── AuthContext.jsx                 # Authentication state
-│   └── CartContext.jsx                 # Shopping cart state
-├── App.jsx        # Application routing and provider wrappers
+├── router/        # Application router configuration
+├── App.jsx        # Application root and provider wrappers
 ├── main.jsx       # React DOM entry point
-└── index.css      # Global styles and Tailwind directives
+└── index.css      # Global styles, Tailwind directives, and design system tokens
 ```
 
 ## ✨ Core Features
@@ -87,12 +81,12 @@ npm install
 
 ### 3. Environment Variables
 
-Create a `.env` file in the root directory (if required by the `lib/` axios config) and add your environment variables. Commonly, this includes the backend API URL:
+Create a `.env` file in the root directory and add your environment variables. The project requires the backend API URL to be set:
 
 ```env
-VITE_API_BASE_URL=http://localhost:5000/api
+VITE_API_URL="https://depi-gp-production.up.railway.app/api/"
 ```
-*(Note: Adjust the variables based on your actual backend configuration).*
+*(Note: You can switch this to your local backend `http://localhost:5000/api/` during local development).*
 
 ### 4. Run the Development Server
 

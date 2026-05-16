@@ -1,7 +1,7 @@
-import { use } from "react";
+import { use, useState } from "react";
 import useProductDetials from "../hooks/useProductDetials";
-import { CartContext } from "../store/CartContext";
-import ReviewsSection from "../components/ReviewsSection";
+import { CartContext } from "../context/CartContext";
+import ReviewsSection from "../features/products/ReviewsSection";
 import { Link } from "react-router";
 import useAddProduct from "../hooks/useAddProduct";
 
@@ -13,242 +13,236 @@ export default function ProductDetials() {
     isLoading,
     isError,
   } = useProductDetials();
-  const addProduct = useAddProduct(
-    selectedVariant.variant_id,
-  );
+  
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const addProduct = useAddProduct(selectedVariant.variant_id);
+
   return (
-    <section className="bg-base-100 py-12">
+    <main className="bg-background min-h-screen">
       {isError && <EmptyProductDetails />}
       {isLoading && <ProductDetialsSkeleton />}
       {!isLoading && !isError && (
-        <div className="grid items-start gap-8 px-4 py-8 md:px-8 lg:grid-cols-7 lg:gap-12 max-w-7xl mx-auto">
-          {/* Image Section */}
-          <div className="relative overflow-hidden rounded-3xl bg-white shadow-sm lg:col-span-4 flex items-center justify-center p-5 sm:p-6">
-            {/* Category badge */}
-            <span className="absolute top-4 left-4 bg-black text-white text-[10px] sm:text-xs px-3 py-1 z-10 rounded-full tracking-wide">
-              {productDetials?.category?.category_name}
-            </span>
+        <div className="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-12 lg:py-24">
+          {/* Breadcrumbs */}
+          <nav className="flex items-center gap-3 mb-12 font-label-caps text-[10px] text-on-secondary-container tracking-widest uppercase">
+            <Link to="/products" className="hover:text-primary transition-colors">Shop</Link>
+            <span className="text-outline-variant">/</span>
+            <span className="text-outline-variant">{productDetials?.category?.category_name}</span>
+            <span className="text-outline-variant">/</span>
+            <span className="text-primary">{productDetials?.product_name}</span>
+          </nav>
 
-            {/* Image */}
-            <div className="w-full max-w-md sm:max-w-lg md:max-w-xl">
-              <img
-                src={productDetials?.images[0].image_url}
-                alt={productDetials?.product_name}
-                className="w-full h-auto object-contain transition duration-500 hover:scale-105"
-              />
-            </div>
-          </div>
-
-          {/* Content Section */}
-          <div className="lg:col-span-3 flex flex-col justify-center h-full">
-            {/* Top */}
-            <div>
-              {/* Title + Price */}
-              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mb-2">
-                <h1 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-gray-900 leading-tight">
-                  {productDetials?.product_name}
-                </h1>
-
-                <span className="bg-gray-100 text-gray-900 text-sm font-semibold px-3 py-1 rounded-full w-fit">
-                  ${selectedVariant?.price}
-                </span>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-gutter lg:gap-16">
+            {/* Left: Product Gallery */}
+            <div className="lg:col-span-7 flex flex-col-reverse lg:flex-row gap-6">
+              {/* Thumbnail Strip */}
+              <div className="flex lg:flex-col gap-4 overflow-x-auto lg:overflow-visible pb-4 lg:pb-0 hide-scrollbar">
+                {productDetials?.images?.map((img, index) => (
+                  <button 
+                    key={index}
+                    onClick={() => setActiveImageIndex(index)}
+                    className={`w-20 h-24 flex-shrink-0 border transition-all duration-300 bg-white cursor-pointer ${
+                      activeImageIndex === index ? "border-primary opacity-100 shadow-sm" : "border-outline-variant opacity-60 hover:opacity-100"
+                    }`}
+                  >
+                    <img
+                      src={img.image_url}
+                      alt={`Detail ${index}`}
+                      className="w-full h-full object-contain p-2"
+                    />
+                  </button>
+                ))}
               </div>
 
-              {/* Category description */}
-              <p className="text-xs text-gray-400 mb-3">
-                {productDetials?.category?.description}
-              </p>
-
-              {/* Description */}
-              <p className="text-gray-500 text-sm sm:text-base mb-5 leading-relaxed">
-                {productDetials?.description}
-              </p>
-
-              {/* Stock status */}
-              <p
-                className={`text-xs font-medium mb-4 ${
-                  selectedVariant?.stock <= selectedVariant?.low_stock_threshold
-                    ? "text-red-500"
-                    : "text-green-600"
-                }`}
-              >
-                {selectedVariant?.stock <= selectedVariant?.low_stock_threshold
-                  ? `⚠ Only ${selectedVariant?.stock} left`
-                  : "✔ In Stock"}
-              </p>
-
-              {/* Volume Selector */}
-              <div className="mb-6">
-                <p className="mb-2 text-xs text-gray-500 uppercase tracking-widest">
-                  Select Volume
-                </p>
-
-                <div className="flex flex-wrap gap-2 sm:gap-3">
-                  {productDetials?.variants.map((variant) => {
-                    const isActive =
-                      variant.variant_id === selectedVariant?.variant_id;
-
-                    return (
-                      <button
-                        key={variant.variant_id}
-                        onClick={() => setSelectedVariant(variant)}
-                        className={`px-5 py-2 text-sm rounded-lg transition ${
-                          isActive
-                            ? "bg-black text-white border-2 border-black"
-                            : "border border-gray-300 text-gray-700 hover:border-black"
-                        }`}
-                      >
-                        {variant.size}
-                      </button>
-                    );
-                  })}
+              {/* Main Feature Image */}
+              <div className="flex-grow aspect-[4/5] bg-white border linen-border overflow-hidden relative group flex items-center justify-center">
+                {productDetials?.images && productDetials?.images.length > 0 ? (
+                  <div className="w-full h-full p-8 md:p-12 lg:p-16 transition-all duration-700 bg-surface-container-low/30">
+                    <img
+                      src={productDetials?.images[activeImageIndex]?.image_url || productDetials?.images[0].image_url}
+                      alt={productDetials?.product_name}
+                      className="w-full h-full object-contain transform group-hover:scale-110 transition-transform duration-1000 ease-out"
+                    />
+                  </div>
+                ) : (
+                  <div className="w-full h-full bg-surface-container flex items-center justify-center">
+                    <span className="text-outline font-label-caps">No image available</span>
+                  </div>
+                )}
+                <div className="absolute top-6 right-6">
+                  <span className="bg-primary text-on-primary font-label-caps text-[10px] px-3 py-1 tracking-[0.2em] uppercase">
+                    Clinical Grade
+                  </span>
                 </div>
               </div>
             </div>
 
-            {/* Bottom */}
-            <div>
-              {/* CTA */}
-              <button
-                onClick={selectedVariant?.stock && addProduct}
-                disabled={selectedVariant?.stock === 0}
-                className="w-full py-3 rounded-xl bg-black text-white text-sm font-semibold tracking-wide hover:opacity-90 active:scale-95 transition mb-4 disabled:opacity-50"
-              >
-                {selectedVariant?.stock === 0 ? "Out of Stock" : "Add to Cart"}
-              </button>
 
-              {/* Secondary actions */}
-              <div className="flex gap-2 sm:gap-3 mb-5">
-                <button className="flex-1 py-2 border border-gray-300 rounded-lg text-sm hover:border-black transition">
-                  ♡ Wishlist
-                </button>
+            {/* Right: Product Details */}
+            <div className="lg:col-span-5 flex flex-col">
+              <header className="mb-8">
+                <p className="font-label-caps text-[12px] text-on-secondary-container mb-2 uppercase tracking-widest">
+                  {productDetials?.category?.category_name}
+                </p>
+                <h1 className="font-display-lg text-[40px] lg:text-[48px] leading-tight mb-4 text-primary uppercase tracking-tighter">
+                  {productDetials?.product_name}
+                </h1>
+                {selectedVariant && (
+                  <p className="font-headline-sm text-[28px] text-primary mb-6">
+                    ${selectedVariant.price}
+                  </p>
+                )}
+                <div className="h-px w-full bg-outline-variant/30 mb-8"></div>
+                <p className="font-body-lg text-body-lg text-secondary leading-relaxed">
+                  {productDetials?.description}
+                </p>
+              </header>
 
-                <button className="flex-1 py-2 border border-gray-300 rounded-lg text-sm hover:border-black transition">
-                  Share
+              {/* Variants Selection */}
+              {productDetials?.variants && productDetials?.variants.length > 0 && (
+                <div className="mb-10">
+                  <h3 className="font-label-caps text-[11px] font-bold uppercase tracking-widest text-primary mb-4">
+                    Select Size
+                  </h3>
+                  <div className="flex flex-wrap gap-3">
+                    {productDetials?.variants.map((v) => (
+                      <button
+                        key={v.variant_id}
+                        onClick={() => setSelectedVariant(v)}
+                        className={`h-12 px-6 font-label-caps text-[12px] tracking-widest transition-all border ${
+                          selectedVariant?.variant_id === v.variant_id
+                            ? "bg-primary text-on-primary border-primary"
+                            : "bg-white text-primary border-outline-variant hover:border-primary"
+                        }`}
+                      >
+                        {v.size}
+                      </button>
+                    ))}
+                  </div>
+                  {selectedVariant && (
+                    <p className={`font-body-md text-xs mt-4 ${selectedVariant.stock > 0 ? "text-on-surface-variant" : "text-error"}`}>
+                      {selectedVariant.stock > 0
+                        ? `${selectedVariant.stock} units currently in stock`
+                        : "Temporarily out of stock"}
+                    </p>
+                  )}
+                </div>
+              )}
+
+              {/* CTA Section */}
+              <div className="mb-12">
+                <button
+                  onClick={selectedVariant?.stock ? addProduct : undefined}
+                  disabled={!selectedVariant || selectedVariant?.stock === 0}
+                  className="w-full bg-primary text-on-primary py-5 font-label-caps text-[14px] tracking-[0.2em] hover:bg-on-surface-variant transition-all flex items-center justify-center gap-3 group disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {selectedVariant?.stock === 0 ? "OUT OF STOCK" : "ADD TO REGIMEN"}
+                  {selectedVariant?.stock > 0 && (
+                    <span className="material-symbols-outlined text-[18px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                  )}
                 </button>
               </div>
 
-              {/* Tags */}
-              <div className="flex flex-wrap gap-2">
-                {["VEGAN", "CLINICAL GRADE", "CRUELTY FREE"].map((tag) => (
-                  <span
-                    key={tag}
-                    className="rounded-full bg-gray-100 px-3 py-1 text-xs text-gray-600 font-medium hover:bg-gray-200 transition"
-                  >
-                    {tag}
-                  </span>
-                ))}
+              {/* Clinical Reveal (Accordion-style Details) */}
+              <div className="flex flex-col border-t border-outline-variant/30">
+                <div className="py-6 border-b border-outline-variant/30">
+                  <div className="w-full flex justify-between items-center text-left">
+                    <span className="font-label-caps text-[13px] text-primary tracking-widest font-bold uppercase">Clinical Application</span>
+                  </div>
+                  <div className="mt-4 font-body-md text-sm text-on-secondary-container leading-relaxed">
+                    Apply to cleansed skin using fingertips. Gently pat into the face and neck until fully absorbed. Engineered for daily professional use.
+                  </div>
+                </div>
+                
+                <div className="py-6 border-b border-outline-variant/30">
+                  <div className="w-full flex justify-between items-center text-left">
+                    <span className="font-label-caps text-[13px] text-primary tracking-widest font-bold uppercase">Core Ingredients</span>
+                  </div>
+                  <div className="mt-4 font-body-md text-sm text-on-secondary-container leading-relaxed">
+                    Formulated with high-potency dermatological actives. Dermatologist tested. Paraben free. Fragrance free.
+                  </div>
+                </div>
+
+                <div className="py-6">
+                  <div className="flex items-center gap-4 p-4 bg-secondary-container/20 border-l-2 border-primary">
+                    <span className="material-symbols-outlined text-primary text-[24px]">science</span>
+                    <div>
+                      <p className="font-label-caps text-[11px] text-primary font-bold tracking-widest">MOLECULAR VERIFIED</p>
+                      <p className="font-body-md text-secondary text-[12px]">Laboratory tested for stability and efficacy.</p>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
+
+          {/* REVIEWS SECTION */}
+          <div className="mt-24 pt-24 border-t border-outline-variant/30">
+            <ReviewsSection />
+          </div>
         </div>
       )}
-
-      {/* REVIEWS SECTION */}
-      {!isError && !isLoading && <ReviewsSection />}
-
-      {/* RECOMMENDED SIMILAR PRODUCTS BY INGREDIENTS */}
-      {/* <div className="mt-16 px-4 md:px-8 max-w-7xl mx-auto">
-        <h2 className="text-xl font-medium text-base-content mb-6 border-b border-base-300 pb-2">
-          Highly recommended with this product
-        </h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {[
-            { name: "Gentle Cleanser", label: "Step 1" },
-            { name: "Exfoliating Toner", label: "Step 2" },
-            { name: "Hydra Barrier", label: "Step 4" }
-          ].map((item, i) => (
-             <div key={i} className="rounded-xl border border-base-300 bg-base-200/30 p-4 text-center hover:bg-base-200/60 transition cursor-pointer">
-                <div className="h-24 w-full bg-base-300 rounded-lg mb-3 object-cover flex items-center justify-center text-xs text-base-content/40">Image Placeholder</div>
-                <p className="text-xs uppercase text-primary font-semibold tracking-wider mb-1">{item.label}</p>
-                <p className="text-sm font-medium text-base-content">{item.name}</p>
-             </div>
-          ))}
-        </div>
-      </div> */}
-    </section>
+    </main>
   );
 }
 
 function ProductDetialsSkeleton() {
   return (
-    <div className="grid items-start gap-8 px-4 py-8 md:px-8 lg:grid-cols-7 lg:gap-12 max-w-7xl mx-auto animate-pulse">
-      {/* Image Skeleton */}
-      <div className="lg:col-span-4 bg-white rounded-3xl shadow-md p-6 flex items-center justify-center">
-        <div className="skeleton w-full max-w-md h-64 sm:h-80 md:h-96 rounded-xl"></div>
-      </div>
+    <div className="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-12 lg:py-24 animate-pulse">
+      {/* Breadcrumbs Skeleton */}
+      <div className="h-4 w-48 bg-surface-container mb-12"></div>
 
-      {/* Content Skeleton */}
-      <div className="lg:col-span-3 flex flex-col gap-5">
-        {/* Title + Price */}
-        <div className="flex justify-between items-center gap-3">
-          <div className="skeleton h-6 w-40 rounded"></div>
-          <div className="skeleton h-6 w-20 rounded-full"></div>
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-gutter lg:gap-16">
+        {/* Left: Product Gallery Skeleton */}
+        <div className="lg:col-span-7 flex flex-col-reverse lg:flex-row gap-6">
+          {/* Thumbnail Strip Skeleton */}
+          <div className="flex lg:flex-col gap-4">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="w-20 h-24 bg-surface-container"></div>
+            ))}
+          </div>
+
+          {/* Main Feature Image Skeleton */}
+          <div className="flex-grow aspect-[4/5] bg-surface-container"></div>
         </div>
 
-        {/* Description */}
-        <div className="flex flex-col gap-2">
-          <div className="skeleton h-4 w-full rounded"></div>
-          <div className="skeleton h-4 w-5/6 rounded"></div>
-          <div className="skeleton h-4 w-2/3 rounded"></div>
-        </div>
-
-        {/* Volume Selector */}
-        <div className="flex gap-3 mt-2">
-          <div className="skeleton h-10 w-20 rounded-lg"></div>
-          <div className="skeleton h-10 w-20 rounded-lg"></div>
-        </div>
-
-        {/* Button */}
-        <div className="skeleton h-12 w-full rounded-xl mt-2"></div>
-
-        {/* Secondary Buttons */}
-        <div className="flex gap-3">
-          <div className="skeleton h-10 flex-1 rounded-lg"></div>
-          <div className="skeleton h-10 flex-1 rounded-lg"></div>
-        </div>
-
-        {/* Tags */}
-        <div className="flex gap-2 flex-wrap">
-          <div className="skeleton h-6 w-16 rounded-full"></div>
-          <div className="skeleton h-6 w-20 rounded-full"></div>
-          <div className="skeleton h-6 w-24 rounded-full"></div>
+        {/* Right: Product Details Skeleton */}
+        <div className="lg:col-span-5 flex flex-col">
+          <div className="h-4 w-24 bg-surface-container mb-4"></div>
+          <div className="h-12 w-full bg-surface-container mb-6"></div>
+          <div className="h-8 w-32 bg-surface-container mb-8"></div>
+          <div className="h-px w-full bg-outline-variant/30 mb-8"></div>
+          <div className="space-y-3 mb-12">
+            <div className="h-4 w-full bg-surface-container"></div>
+            <div className="h-4 w-full bg-surface-container"></div>
+            <div className="h-4 w-2/3 bg-surface-container"></div>
+          </div>
+          <div className="h-14 w-full bg-surface-container mb-12"></div>
+          <div className="space-y-6">
+            <div className="h-20 w-full bg-surface-container"></div>
+            <div className="h-20 w-full bg-surface-container"></div>
+          </div>
         </div>
       </div>
     </div>
   );
 }
 
+
 function EmptyProductDetails() {
   return (
-    <section className=" flex flex-col items-center justify-center px-2 text-center bg-base-100">
-      {/* Illustration */}
-      <div className="mb-6">
-        <div className="w-28 h-28 sm:w-32 sm:h-32 mx-auto rounded-full bg-base-200 flex items-center justify-center text-5xl">
-          📦
-        </div>
+    <section className="flex flex-col items-center justify-center py-32 px-margin-mobile text-center bg-background">
+      <div className="mb-8">
+        <span className="material-symbols-outlined text-[64px] text-outline-variant">inventory_2</span>
       </div>
-
-      {/* Title */}
-      <h1 className="text-2xl sm:text-3xl font-bold mb-3">Product Not Found</h1>
-
-      {/* Description */}
-      <p className="text-sm sm:text-base text-base-content/70 max-w-md mb-6">
-        The product you are looking for doesn't exist or has been removed. Try
-        browsing other products instead.
+      <h1 className="font-display-lg text-[32px] mb-4 text-primary uppercase tracking-widest">Product Not Found</h1>
+      <p className="font-body-md text-on-surface-variant max-w-md mb-8">
+        The clinical formulation you are seeking is currently unavailable or has been archived.
       </p>
-
-      {/* OWN TAG */}
-      <span className="px-3 py-1 text-xs rounded-full bg-warning/20 text-warning font-medium mb-6">
-        own
-      </span>
-
-      {/* Actions */}
-      <div className="flex flex-col sm:flex-row gap-3">
-        <Link to="/products" className="btn btn-primary w-full sm:w-auto">
-          Browse Products
-        </Link>
-      </div>
+      <Link to="/products" className="bg-primary text-on-primary px-8 py-4 font-label-caps text-[12px] tracking-[0.2em] hover:opacity-90 transition-opacity">
+        BROWSE CATALOG
+      </Link>
     </section>
   );
 }
+

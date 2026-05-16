@@ -1,4 +1,4 @@
-import { AuthContext } from './../store/AuthContext';
+import { AuthContext } from '../context/AuthContext';
 import { use } from "react";
 import { useQuery } from "@tanstack/react-query";
 import apiUrl from '../lib/apiUrl';

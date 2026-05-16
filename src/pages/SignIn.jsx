@@ -1,81 +1,97 @@
 import { Link } from "react-router";
-import SingInForm from "../components/SingInForm";
+import SignInForm from "../features/auth/SignInForm";
+
 export default function SignIn() {
   return (
-    <section className="bg-base-100 min-h-screen pt-4 pb-12 flex items-center justify-center px-2">
-      <div className="grid lg:grid-cols-7 w-full md:w-4/5 mx-auto rounded-3xl overflow-hidden shadow-2xl bg-base-100 border border-base-300 ">
-        {/* LEFT PART */}
-        <div
-          id="sign-in-leftPart"
-          className="relative hidden lg:col-span-4 lg:flex items-center justify-center overflow-hidden bg-base-100"
-        >
-          {/* Soft Gradient Background */}
-          <div className="absolute inset-0  to-base-200"></div>
-
-          {/* Content */}
-          <div className="relative z-10 max-w-2xl px-8 text-center md:text-left">
-            <p className="text-neutral-500 tracking-[0.4em] uppercase text-xs md:text-sm mb-6">
-              LUMIÈRE
-            </p>
-
-            <h1 className="text-neutral-800 font-light leading-tight text-4xl sm:text-5xl md:text-6xl mb-6">
-              Precision meets{" "}
-              <span className="font-semibold text-neutral-900">poetry.</span>
-            </h1>
-
-            <p className="text-neutral-500 font-light text-base md:text-lg leading-relaxed max-w-md">
-              Clinically proven results, curated through the lens of aesthetic
-              excellence.
-            </p>
-          </div>
-
-          {/* Bottom Label */}
-          <div className="absolute bottom-6 left-6 flex items-center gap-4">
-            <div className="bg-neutral-300 w-16 h-[1px]"></div>
-            <p className="text-neutral-400 tracking-[0.25em] font-light text-[11px] uppercase">
-              Clinical Excellence Series
-            </p>
-          </div>
-        </div>
-
-        {/* RIGHT PART */}
-        <div className="py-16 md:py-24 px-6 md:px-16 lg:col-span-3 flex flex-col justify-center bg-base-100 h-full overflow-y-auto">
-          <div className="max-w-md mx-auto w-full">
-            <h2 className="font-serif text-4xl text-base-content mb-3">
-              Welcome Back
-            </h2>
-            <p className="text-base-content/70 text-base font-normal mb-8">
-              Access your personalized clinical regimen.
-            </p>
-
-            <SingInForm />
-
-            <div className="bg-base-300 h-px relative mb-8">
-              <span className="bg-base-100 text-[10px] uppercase font-semibold px-4 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-base-content/40">
-                OR
-              </span>
-            </div>
-            <p className="text-sm font-light text-center text-base-content/70">
-              New to Lumière?{" "}
-              <Link
-                to="/sign-up"
-                className="text-sm font-semibold text-base-content hover:text-primary transition underline underline-offset-4 ms-2"
-              >
-                Create Account
-              </Link>
-            </p>
-
-            <div className="flex justify-center mt-12 flex-wrap gap-3">
-              <div className="py-2 px-4 text-base-content/60 text-[10px] font-semibold tracking-wider bg-base-200 rounded-xl uppercase">
-                Safe for all skins
+    <main className="min-h-screen pt-32 pb-20 flex items-center justify-center bg-[#F9F9F9]">
+      <div className="w-full max-w-[1440px] px-6 lg:px-16 mx-auto">
+        <div className="flex flex-col lg:flex-row bg-white overflow-hidden border border-[#c4c7c7] shadow-[0px_10px_30px_rgba(0,0,0,0.03)] rounded-lg md:rounded-none">
+          {/* Left: Visual Hero */}
+          <div className="w-full lg:w-1/2 relative bg-[#eeeeee] aspect-[4/3] lg:aspect-auto h-auto lg:min-h-[720px]">
+            <img
+              alt="Clinical Serum Bottle"
+              className="absolute inset-0 w-full h-full object-cover"
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuBPWZ19Ohgzf441uzHqtG8f-TWliwvXgYkt_8BgW4qbrA8dF9LtMAZyrcHWDx7JeMw1RRrOAEtxiA0M4wfm3pgI1vB781xMcroYaDk1KOj1gFk2sedD0VCZZHw54sKn5SB2rweX55RqgvBTK7KqFLeA45hFZtxcsIv3pnJ7sOR2uWlIjsFXkvr7x0a_WErqLex7JLl8p_ClD8U4upf7tdTHn_kCmMZLT1PLHiW3-CGx9LhCaxnzpKYg1c26zJTlO6fFO-1pRZ9McLAz"
+            />
+            {/* Overlay Content */}
+            <div className="absolute inset-0 bg-black/5 flex flex-col justify-center px-10 md:px-16">
+              <div className="mb-4">
+                <span className="font-sans text-[10px] md:text-[11px] font-bold text-white tracking-[0.3em] uppercase opacity-90">
+                  LUMIÈRE
+                </span>
               </div>
-              <div className="py-2 px-4 text-base-content/60 text-[10px] font-semibold tracking-wider bg-base-200 rounded-xl uppercase">
-                Dermatologist Verified
+              <h1 className="font-serif text-[48px] md:text-[64px] lg:text-[72px] leading-[1.1] text-white mix-blend-difference mb-4">
+                Precision meets
+                <br />
+                <span className="italic font-normal">poetry.</span>
+              </h1>
+              <p className="font-sans text-sm md:text-base text-white/90 max-w-sm leading-relaxed mix-blend-difference">
+                Clinically proven results, curated through the lens of aesthetic
+                excellence.
+              </p>
+              <div className="absolute bottom-10 md:bottom-16 left-10 md:left-16 border-l border-white/40 pl-6">
+                <span className="font-sans text-[10px] font-bold text-white/80 tracking-[0.2em] uppercase">
+                  Clinical Excellence Series
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Right: Sign In Form */}
+          <div className="w-full lg:w-1/2 bg-white flex flex-col justify-center p-8 md:p-16 lg:px-24">
+            <div className="max-w-md w-full mx-auto">
+              <div className="mb-10 lg:mb-12">
+                <h2 className="font-serif text-3xl md:text-[40px] text-black mb-3">
+                  Welcome Back
+                </h2>
+                <p className="font-sans text-base text-[#444748]">
+                  Access your personalized clinical regimen.
+                </p>
+              </div>
+
+              <SignInForm />
+
+              {/* Divider */}
+              <div className="relative my-8 lg:my-10 text-center">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-[#c4c7c7]"></div>
+                </div>
+                <div className="relative flex justify-center">
+                  <span className="bg-white px-4 font-sans text-[10px] text-[#747878] tracking-[0.2em] uppercase">
+                    OR
+                  </span>
+                </div>
+              </div>
+
+              <div className="text-center space-y-8">
+                <p className="font-sans text-sm text-[#444748]">
+                  New to Lumière?{" "}
+                  <Link
+                    to="/sign-up"
+                    className="text-black font-bold border-b border-black ml-1 pb-0.5"
+                  >
+                    Create Account
+                  </Link>
+                </p>
+
+                {/* Verification Badges */}
+                <div className="flex flex-wrap justify-center gap-4 pt-4">
+                  <div className="bg-[#f9f9f9] px-4 py-3 border border-[#e2e2e2]">
+                    <span className="font-sans text-[9px] md:text-[10px] font-bold text-[#444748] tracking-[0.15em] uppercase">
+                      Safe For All Skins
+                    </span>
+                  </div>
+                  <div className="bg-[#f9f9f9] px-4 py-3 border border-[#e2e2e2]">
+                    <span className="font-sans text-[9px] md:text-[10px] font-bold text-[#444748] tracking-[0.15em] uppercase">
+                      Dermatologist Verified
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </section>
+    </main>
   );
 }

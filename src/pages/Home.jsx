@@ -1,7 +1,7 @@
 import React from "react";
-import HeroSection from "./../components/HeroSection";
-import LaboratoryFavorites from "./../components/LaboratoryFavorites";
-import StartQuizSection from "../components/StartQuizSection";
+import HeroSection from "../features/home/HeroSection";
+import LaboratoryFavorites from "../features/home/LaboratoryFavorites";
+import StartQuizSection from "../features/home/StartQuizSection";
 
 export default function Home() {
   return (

@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { useActionState } from "react";
 import { useOptimistic } from "react";
-import { CartContext } from "../store/CartContext";
+import { CartContext } from "../context/CartContext";
 import { toast } from "sonner";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faX } from "@fortawesome/free-solid-svg-icons";

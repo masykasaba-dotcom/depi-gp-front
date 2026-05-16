@@ -1,9 +1,9 @@
-import CustomInput from "../components/CustomInput";
+import CustomInput from "../components/ui/CustomInput";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFileImage } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router";
 import useGetProfileData from "../hooks/useGetProfileData";
-import RecommendationsProducts from "../components/RecommendationsProducts";
+import RecommendationsProducts from "../features/products/RecommendationsProducts";
 
 export default function Profile() {
   const { isError, isLoading, profileData } = useGetProfileData();

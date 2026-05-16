@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useActionState } from "react";
 import { use } from "react";
 import { useNavigate } from "react-router";
-import { AuthContext } from "../store/AuthContext";
+import { AuthContext } from "../context/AuthContext";
 import { validatEmail, validatPassword } from "../lib/validation";
 import Cookies from "js-cookie";
 import apiUrl from "../lib/apiUrl";

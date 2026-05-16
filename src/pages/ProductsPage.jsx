@@ -1,8 +1,9 @@
 import ReactPaginate from "react-paginate";
 import useGetAllProducts from "../hooks/useGetAllProducts";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faInfinity, faSearch } from "@fortawesome/free-solid-svg-icons";
-import ProductList from "../components/productList";
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import ProductList from "../features/products/ProductList";
+
 export default function ProductsPage() {
   const {
     allProduct,
@@ -19,170 +20,134 @@ export default function ProductsPage() {
   } = useGetAllProducts();
 
   return (
-    <section className="bg-base-100 min-h-screen py-12">
-      <div className="mx-auto max-w-7xl px-4 md:px-8">
-        <header className="mb-10 text-center md:text-left">
-          <p className="mb-2 text-[10px] font-semibold uppercase tracking-widest text-primary">
-            LUMIÈRE Catalog
-          </p>
-          <h1 className="font-serif text-3xl font-light text-base-content md:text-5xl">
-            All Products
-          </h1>
-          <p className="mt-3 text-base-content/70">
-            Browse our complete collection of scientifically formulated
-            skincare.
-          </p>
-        </header>
+    <main className="max-w-container-max mx-auto px-margin-mobile lg:px-margin-desktop pt-16 pb-section-gap">
+      {/* Hero / Page Header */}
+      <header className="mb-16">
+        <h1 className="font-display-lg text-display-lg-mobile md:text-display-lg mb-4 text-primary uppercase tracking-tighter">
+          Clinical Formulations
+        </h1>
+        <p className="font-body-lg text-body-lg text-on-surface-variant max-w-2xl">
+          Advanced dermatological solutions engineered for professional efficacy
+          and sensory refinement. Explore our catalog of science-backed
+          essentials.
+        </p>
+      </header>
 
-        <div className="flex flex-col md:flex-row gap-10">
-          {/* FILTERS SIDEBAR */}
-          <aside className="w-full md:w-64 shrink-0 space-y-8">
-            <div>
-              <h3 className="font-semibold text-sm uppercase tracking-wider text-base-content mb-4">
-                Categories
+      <div className="flex flex-col md:flex-row gap-gutter">
+        {/* Sidebar Filters */}
+        <aside className="w-full md:w-64 flex-shrink-0">
+          <div className="md:sticky md:top-32 space-y-12">
+            <div className="filter-group">
+              <h3 className="font-label-caps text-[12px] mb-8 text-primary tracking-[0.3em] uppercase border-b border-outline-variant pb-2">
+                Skin Category
               </h3>
-              <ul className="space-y-2 text-sm text-base-content/70">
-                <li
-                  onClick={() => handleUpdateCategory("")}
-                  className={`flex justify-between cursor-pointer ${category === "" && "text-primary"}`}
-                >
-                  <span className="font-medium">All</span>
-                </li>
-                <li
-                  onClick={() => handleUpdateCategory("Toners")}
-                  className={`flex justify-between cursor-pointer ${category === "Toners" && "text-primary"}`}
-                >
-                  <span>Toners</span>
-                </li>
-                <li
-                  onClick={() => handleUpdateCategory("Exfoliators")}
-                  className={`flex justify-between cursor-pointer ${category === "Exfoliators" && "text-primary"}`}
-                >
-                  <span>Exfoliators</span>
-                </li>
-                <li
-                  onClick={() => handleUpdateCategory("Eye Care")}
-                  className={`flex justify-between cursor-pointer ${category === "Eye Care" && "text-primary"}`}
-                >
-                  <span>Eye Care</span>
-                </li>
-                <li
-                  onClick={() => handleUpdateCategory("Sun Protection")}
-                  className={`flex justify-between cursor-pointer ${category === "Sun Protection" && "text-primary"}`}
-                >
-                  <span>Sun Protection</span>
-                </li>
-                <li
-                  onClick={() => handleUpdateCategory("Masks")}
-                  className={`flex justify-between cursor-pointer ${category === "Masks" && "text-primary"}`}
-                >
-                  <span>Masks</span>
-                </li>
-                <li
-                  onClick={() => handleUpdateCategory("Cleansers")}
-                  className={`flex justify-between cursor-pointer ${category === "Cleansers" && "text-primary"}`}
-                >
-                  <span>Cleansers</span>
-                </li>
-                <li
-                  onClick={() => handleUpdateCategory("Moisturizers")}
-                  className={`flex justify-between cursor-pointer ${category === "Moisturizers" && "text-primary"}`}
-                >
-                  <span>Moisturizers</span>
-                </li>
-                <li
-                  onClick={() => handleUpdateCategory("Serums")}
-                  className={`flex justify-between cursor-pointer ${category === "Serums" && "text-primary"}`}
-                >
-                  <span>Serums</span>
-                </li>
-              </ul>
-            </div>
-
-            {/* <div>
-              <h3 className="font-semibold text-sm uppercase tracking-wider text-base-content mb-4">
-                Skin Concern
-              </h3>
-              <div className="space-y-3">
-                <label className="flex items-center gap-3 cursor-pointer text-sm text-base-content/80">
-                  <input type="checkbox" className="checkbox checkbox-sm" />{" "}
-                  Hydration
-                </label>
-                <label className="flex items-center gap-3 cursor-pointer text-sm text-base-content/80">
-                  <input type="checkbox" className="checkbox checkbox-sm" />{" "}
-                  Anti-Aging
-                </label>
-                <label className="flex items-center gap-3 cursor-pointer text-sm text-base-content/80">
-                  <input type="checkbox" className="checkbox checkbox-sm" />{" "}
-                  Brightening
-                </label>
+              <div className="flex flex-col gap-5">
+                {[
+                  { value: "", label: "All Formulations" },
+                  { value: "Toners", label: "Toners" },
+                  { value: "Exfoliators", label: "Exfoliators" },
+                  { value: "Eye Care", label: "Eye Care" },
+                  { value: "Sun Protection", label: "Sun Protection" },
+                  { value: "Masks", label: "Masks" },
+                  { value: "Cleansers", label: "Cleansers" },
+                  { value: "Moisturizers", label: "Moisturizers" },
+                  { value: "Serums", label: "Serums" },
+                ].map((item) => (
+                  <button
+                    key={item.label}
+                    onClick={() => handleUpdateCategory(item.value)}
+                    className="flex items-center justify-between group cursor-pointer text-left"
+                  >
+                    <span
+                      className={`font-body-md text-sm tracking-wide transition-all duration-300 ${
+                        category === item.value
+                          ? "text-primary font-bold translate-x-1"
+                          : "text-on-surface-variant group-hover:text-primary group-hover:translate-x-1"
+                      }`}
+                    >
+                      {item.label}
+                    </span>
+                    {category === item.value && (
+                      <div className="w-1 h-4 bg-primary"></div>
+                    )}
+                  </button>
+                ))}
               </div>
-            </div> */}
-          </aside>
-
-          {/* PRODUCT GRID */}
-          <div className="flex-1">
-            <div className="relative w-full">
-              <input
-                onChange={(event) => handleSearch(event.target.value)}
-                type="search"
-                placeholder="Search..."
-                className="w-full py-3 pl-10 pr-4 text-base border border-gray-200 rounded-lg outline-none transition-all duration-200 placeholder:text-gray-400 "
-                defaultValue={search}
-              />
-
-              {/* Icon */}
-              <FontAwesomeIcon
-                icon={faSearch}
-                className="absolute left-2 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400"
-              />
             </div>
-            <div className="flex justify-between items-center mb-6 border-b border-base-300 pb-4 mt-4">
-              <p className="text-sm text-base-content/60">
-                Showing 1-6 of 24 products
-              </p>
+          </div>
+        </aside>
+
+        {/* Product Grid Area */}
+        <div className="flex-1">
+          {/* Controls Bar */}
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-8 mb-16">
+            <div className="relative w-full sm:w-96">
+              <label className="font-label-caps text-[10px] text-outline uppercase tracking-widest mb-2 block">Search Catalog</label>
+              <div className="relative">
+                <input
+                  onChange={(event) => handleSearch(event.target.value)}
+                  type="text"
+                  placeholder="Enter keywords..."
+                  className="w-full py-3 pl-0 border-0 border-b border-outline-variant bg-transparent text-sm md:text-base font-body-md outline-none focus:ring-0 focus:border-primary transition-colors accent-primary"
+                  defaultValue={search}
+                />
+                <FontAwesomeIcon
+                  icon={faSearch}
+                  className="absolute right-0 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-outline pointer-events-none"
+                />
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-2 min-w-[200px]">
+              <span className="font-label-caps text-[10px] tracking-widest text-outline uppercase">
+                Sort by Price
+              </span>
               <select
-                className="select select-sm bg-base-200 border-none text-base-content"
+                className="border-0 border-b border-outline-variant bg-transparent text-sm md:text-base font-body-md py-3 pl-0 pr-8 outline-none focus:ring-0 focus:border-primary transition-colors cursor-pointer appearance-none accent-primary"
+                style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'currentColor\'%3E%3Cpath stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M19 9l-7 7-7-7\' /%3E%3C/svg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right center', backgroundSize: '1rem' }}
                 value={`${maxAndMinPrice.minPrice}-${maxAndMinPrice.maxPrice}`}
                 onChange={(e) => {
                   const [min, max] = e.target.value.split("-");
                   handleUpdatePrice(min, max);
                 }}
               >
-                <option value="-">Sort by</option>
-                <option value="-25">Sort by: Price (0 → 25)</option>
-                <option value="25-50">Sort by: Price (25 → 50)</option>
-                <option value="50-">Sort by: Price (50 → ∞)</option>
+                <option value="-">Default Order</option>
+                <option value="-25">Below $25</option>
+                <option value="25-50">$25 — $50</option>
+                <option value="50-">Above $50</option>
               </select>
             </div>
+          </div>
 
+
+          <div className="min-h-[600px]">
             <ProductList
               maxPrice={maxAndMinPrice.maxPrice}
               minPrice={maxAndMinPrice.minPrice}
               allProduct={allProduct}
               isLoading={isLoading}
             />
-            <ReactPaginate
-              breakLabel="..."
-              nextLabel="›"
-              previousLabel="‹"
-              onPageChange={handleUpdatePageNumber}
-              pageRangeDisplayed={3} // 👈 smaller on mobile
-              marginPagesDisplayed={pageNumber}
-              pageCount={pages}
-              forcePage={pageNumber - 1}
-              containerClassName="flex flex-wrap items-center justify-center gap-1 sm:gap-2 mt-8"
-              pageClassName="px-2 sm:px-3 py-1 text-xs sm:text-sm rounded-m border border-gray-300 hover:border-black transition"
-              activeClassName="bg-black text-white border-black"
-              previousClassName="px-2 sm:px-3 py-1 text-xs sm:text-sm rounded-md border border-gray-300"
-              nextClassName="px-2 sm:px-3 py-1 text-xs sm:text-sm rounded-md border border-gray-300"
-              breakClassName="px-1 text-gray-400 text-xs"
-              disabledClassName="opacity-40 cursor-not-allowed"
-            />
           </div>
+
+          <ReactPaginate
+            breakLabel="..."
+            nextLabel={<span className="material-symbols-outlined text-[18px]">chevron_right</span>}
+            previousLabel={<span className="material-symbols-outlined text-[18px]">chevron_left</span>}
+            onPageChange={handleUpdatePageNumber}
+            pageRangeDisplayed={3}
+            marginPagesDisplayed={1}
+            pageCount={pages}
+            forcePage={pageNumber - 1}
+            containerClassName="flex items-center justify-center gap-3 mt-20"
+            pageClassName="min-w-[40px] h-10 flex items-center justify-center border border-outline-variant bg-transparent text-sm font-label-caps hover:border-primary transition-colors cursor-pointer"
+            activeClassName="bg-primary text-on-primary border-primary"
+            previousClassName="min-w-[40px] h-10 flex items-center justify-center border border-outline-variant bg-transparent text-sm hover:border-primary transition-colors cursor-pointer"
+            nextClassName="min-w-[40px] h-10 flex items-center justify-center border border-outline-variant bg-transparent text-sm hover:border-primary transition-colors cursor-pointer"
+            breakClassName="px-2 text-outline text-sm"
+            disabledClassName="opacity-30 cursor-not-allowed pointer-events-none"
+          />
         </div>
       </div>
-    </section>
+    </main>
   );
 }
-console.log("50-".split('-'))

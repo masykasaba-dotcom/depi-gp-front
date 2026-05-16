@@ -1,10 +1,10 @@
-import CustomInput from "../components/CustomInput";
-import AddNewAddress from "../components/AddNewAddress";
-import AddressCard from "../components/AddressCard";
+import CustomInput from "../components/ui/CustomInput";
+import AddNewAddress from "../features/profile/AddNewAddress";
+import AddressCard from "../features/profile/AddressCard";
 import { useCallback, useState } from "react";
 import axios from "axios";
 import { use } from "react";
-import { AuthContext } from "./../store/AuthContext";
+import { AuthContext } from "../context/AuthContext";
 import { useQuery } from "@tanstack/react-query";
 import useAddresses from "../hooks/useAddresses";
 

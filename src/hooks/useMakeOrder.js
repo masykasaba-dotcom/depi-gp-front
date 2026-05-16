@@ -1,8 +1,8 @@
 import React from "react";
 import { use } from "react";
 import { useNavigate } from "react-router";
-import { CartContext } from "../store/CartContext";
-import { AuthContext } from "../store/AuthContext";
+import { CartContext } from "../context/CartContext";
+import { AuthContext } from "../context/AuthContext";
 import axios from "axios";
 import { useActionState } from "react";
 import apiUrl from "../lib/apiUrl";

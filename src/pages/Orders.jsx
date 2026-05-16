@@ -1,9 +1,9 @@
 import axios from "axios";
 import { use } from "react";
 import { Link } from "react-router";
-import { AuthContext } from "../store/AuthContext";
+import { AuthContext } from "../context/AuthContext";
 import { useQuery } from "@tanstack/react-query";
-import OrderCard from "../components/OrderCard";
+import OrderCard from "../features/orders/OrderCard";
 import useGetOrdres from "../hooks/useGetOrdres";
 
 export default function Orders() {
