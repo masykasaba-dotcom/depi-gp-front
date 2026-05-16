@@ -1,208 +1,289 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faCartArrowDown,
-  faCircleUser,
-  faMoon,
-  faSun,
-} from "@fortawesome/free-solid-svg-icons";
-import NavItems from "./NavItems";
-import { Link, NavLink } from "react-router";
+import { useState, use, useEffect } from "react";
+import { Link, NavLink, useLocation } from "react-router";
 import { CartContext } from "../../context/CartContext";
 import useDarkMode from "../../hooks/useDarkMode";
 import useSignOut from "../../hooks/useSignOut";
-import { use } from "react";
 
 export default function Navbar() {
   const { darkMode, handleDarkMode } = useDarkMode();
   const { token, handleSignOut } = useSignOut();
   const { productsNumber } = use(CartContext);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const location = useLocation();
+
+  const isHomePage = location.pathname === "/";
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // If we are on the Home page, use scroll logic. 
+  // Otherwise, the navbar should ALWAYS be solid so the white text is readable.
+  const isSolid = !isHomePage || isScrolled;
+
+  const navClasses = isSolid
+    ? "bg-[#04362E] backdrop-blur-lg border-b border-white/10 shadow-sm"
+    : "bg-transparent border-b border-transparent lg:border-white/10";
+
   return (
-    <header className="sticky top-0 z-50 bg-[#F9F9F9]/80 backdrop-blur-md border-b border-[#c4c7c7]">
-      <div className="flex justify-between items-center h-20 px-6 lg:px-16 max-w-[1440px] mx-auto">
-        {/* Left: Mobile Menu & Logo */}
-        <div className="flex items-center gap-4">
-          <div className="dropdown lg:hidden">
-            <div tabIndex={0} role="button" className="p-2 -ml-2 text-black">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5 cursor-pointer"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M4 6h16M4 12h8m-8 6h16"
-                />
-              </svg>
-            </div>
-            <ul
-              tabIndex={-1}
-              className="dropdown-content bg-white border border-[#c4c7c7] rounded-none z-20 mt-3 w-52 p-4 shadow-lg flex flex-col gap-4 font-sans text-xs font-semibold uppercase tracking-[0.15em] text-[#444748]"
-            >
+    <>
+      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${navClasses}`}>
+        <div className="flex justify-between items-center h-16 px-5 lg:px-12 max-w-[1440px] mx-auto">
+
+          {/* ─── Logo ─── */}
+          <Link
+            to="/"
+            className={`font-serif text-[22px] tracking-wide no-underline flex-shrink-0 text-white ${!isSolid ? "drop-shadow-sm" : ""}`}
+          >
+            LUMINA SKIN
+          </Link>
+
+          {/* ─── Center Nav — Desktop ─── */}
+          <nav className="hidden lg:flex items-center">
+            <ul className="flex items-center gap-1">
               {token ? (
-                <>
-                  <NavItems />
-                  <li
-                    className="cursor-pointer hover:text-black transition-colors"
-                    onClick={handleSignOut}
-                  >
-                    Sign-out
-                  </li>
-                </>
+                <NavItemsDesktop />
               ) : (
                 <>
-                  <li>
-                    <Link
-                      to="/products"
-                      className="hover:text-black transition-colors"
-                    >
-                      Shop
-                    </Link>
-                  </li>
-                  <li>
-                    <span className="hover:text-black transition-colors cursor-pointer">
-                      Clinical Research
-                    </span>
-                  </li>
-                  <li>
-                    <span className="hover:text-black transition-colors cursor-pointer">
-                      About
-                    </span>
-                  </li>
-                  <div className="h-px w-full bg-[#c4c7c7] my-2"></div>
-                  <li>
-                    <NavLink to="/sign-in" className="text-black font-bold">
-                      Sign In
-                    </NavLink>
-                  </li>
-                  <li>
-                    <NavLink
-                      to="/sign-up"
-                      className="hover:text-black transition-colors"
-                    >
-                      Create Account
-                    </NavLink>
-                  </li>
+                  <DesktopNavLink to="/products">Shop</DesktopNavLink>
+                  <DesktopNavLink to="#">Clinical Research</DesktopNavLink>
+                  <DesktopNavLink to="#">About</DesktopNavLink>
                 </>
               )}
             </ul>
-          </div>
-          <Link
-            to="/"
-            className="font-serif text-[24px] lg:text-[28px] text-black tracking-tighter no-underline"
-          >
-            LUMIÈRE
-          </Link>
-        </div>
+          </nav>
 
-        {/* Center: Desktop Nav Items */}
-        <div className="hidden lg:flex items-center absolute left-1/2 -translate-x-1/2">
-          <ul className="flex items-center gap-10 font-sans text-[11px] font-bold uppercase tracking-[0.15em] text-[#444748]">
+          {/* ─── Right Actions ─── */}
+          <div className="flex items-center gap-1">
+
+            {/* Dark mode toggle */}
+            <button
+              onClick={handleDarkMode}
+              className="w-9 h-9 rounded-lg flex items-center justify-center transition-all text-white/80 hover:text-white hover:bg-white/10"
+              aria-label="Toggle dark mode"
+            >
+              {darkMode === "dark" ? (
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="currentColor" className="w-[18px] h-[18px]">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
+                </svg>
+              ) : (
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="currentColor" className="w-[18px] h-[18px]">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
+                </svg>
+              )}
+            </button>
+
             {token ? (
-              <NavItems />
-            ) : (
               <>
-                <li>
-                  <Link
-                    to="/products"
-                    className="hover:text-black transition-colors tracking-[0.2em]"
-                  >
-                    Shop
-                  </Link>
-                </li>
-                <li>
-                  <span className="hover:text-black transition-colors cursor-pointer tracking-[0.2em]">
-                    Clinical Research
-                  </span>
-                </li>
-                <li>
-                  <span className="hover:text-black transition-colors cursor-pointer tracking-[0.2em]">
-                    About
-                  </span>
-                </li>
+                {/* Profile */}
+                <NavLink
+                  to="/profile"
+                  className="w-9 h-9 rounded-lg flex items-center justify-center transition-all text-white/80 hover:text-white hover:bg-white/10"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="currentColor" className="w-[18px] h-[18px]">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                  </svg>
+                </NavLink>
+
+                {/* Cart */}
+                <NavLink
+                  to="/cart"
+                  className="relative w-9 h-9 rounded-lg flex items-center justify-center transition-all text-white/80 hover:text-white hover:bg-white/10"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="currentColor" className="w-[18px] h-[18px]">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
+                  </svg>
+                  {productsNumber > 0 && (
+                    <span className="absolute -top-1 -right-1 text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-bold bg-white text-[#04362E]">
+                      {productsNumber}
+                    </span>
+                  )}
+                </NavLink>
+
+                {/* Sign out */}
+                <button
+                  onClick={handleSignOut}
+                  className="hidden lg:flex items-center gap-1.5 text-xs font-medium transition-all ml-1 px-3 py-2 rounded-lg text-white/80 hover:text-white hover:bg-white/10"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="currentColor" className="w-4 h-4">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
+                  </svg>
+                  Sign out
+                </button>
               </>
-            )}
-          </ul>
-        </div>
-
-        {/* Right: Actions */}
-        <div className="flex items-center gap-6 font-sans text-[11px] font-bold uppercase tracking-[0.15em] text-[#444748]">
-          <div className="hidden lg:flex items-center gap-6">
-            {token ? (
-              <span
-                className="cursor-pointer hover:text-black transition-colors tracking-[0.2em]"
-                onClick={handleSignOut}
-              >
-                Sign-out
-              </span>
             ) : (
-              <>
+              <div className="hidden lg:flex items-center gap-2 ml-2">
                 <NavLink
                   to="/sign-in"
-                  className="text-black font-bold underline underline-offset-4 decoration-[#c4c7c7] hover:decoration-black transition-colors tracking-[0.1em]"
+                  className="text-sm font-medium px-4 py-2 rounded-lg transition-all text-white/80 hover:text-white hover:bg-white/10"
                 >
                   Sign In
                 </NavLink>
                 <NavLink
                   to="/sign-up"
-                  className="bg-black text-white hover:bg-black/90 transition-colors tracking-[0.1em] px-4 py-2"
+                  className="text-sm font-semibold px-4 py-2 rounded-lg transition-colors shadow-sm bg-white text-[#04362E] hover:bg-white/90"
                 >
                   Create Account
                 </NavLink>
-              </>
+              </div>
             )}
-          </div>
 
-          <div className="flex items-center gap-5 text-black text-[16px]">
-            <FontAwesomeIcon
-              onClick={handleDarkMode}
-              className="cursor-pointer hover:opacity-70 transition-opacity"
-              icon={darkMode === "dark" ? faSun : faMoon}
-            />
-            {token && (
-              <NavLink
-                to="/profile"
-                className="hover:opacity-70 transition-opacity"
-              >
-                <FontAwesomeIcon
-                  className="cursor-pointer"
-                  icon={faCircleUser}
-                />
-              </NavLink>
-            )}
-            {token && (
-              <NavLink
-                to="/cart"
-                className="relative inline-block hover:opacity-70 transition-opacity"
-              >
-                <FontAwesomeIcon
-                  className="cursor-pointer"
-                  icon={faCartArrowDown}
-                />
-                <span className="absolute -top-2 -right-2 text-[9px] bg-black text-white px-1.5 py-0.5 rounded-full font-bold">
-                  {productsNumber}
-                </span>
-              </NavLink>
-            )}
-            {!token && (
-              <span className="cursor-pointer hover:opacity-70 transition-opacity hidden md:inline-block">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  fill="currentColor"
-                  viewBox="0 0 16 16"
-                >
-                  <path d="M8 1a2.5 2.5 0 0 1 2.5 2.5V4h-5v-.5A2.5 2.5 0 0 1 8 1zm3.5 3v-.5a3.5 3.5 0 1 0-7 0V4H1v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4h-3.5zM2 5h12v9a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V5z" />
+            {/* Mobile hamburger */}
+            <button
+              className="lg:hidden w-9 h-9 rounded-lg flex items-center justify-center transition-all ml-1 text-white/80 hover:text-white hover:bg-white/10"
+              onClick={() => setMobileOpen(!mobileOpen)}
+              aria-label="Toggle menu"
+            >
+              {mobileOpen ? (
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
-              </span>
-            )}
+              ) : (
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                </svg>
+              )}
+            </button>
+
           </div>
         </div>
-      </div>
-    </header>
+      </header>
+
+      {/* ─── Mobile Menu Drawer ─── */}
+      {mobileOpen && (
+        <div className="fixed inset-0 z-40 lg:hidden">
+          {/* Backdrop */}
+          <div
+            className="absolute inset-0 bg-black/30 backdrop-blur-sm"
+            onClick={() => setMobileOpen(false)}
+          />
+          {/* Drawer */}
+          <div className="absolute top-0 left-0 h-full w-72 bg-white dark:bg-[#0a1a18] shadow-xl flex flex-col animate-fade-in-up">
+            {/* Drawer header */}
+            <div className="flex items-center justify-between px-5 h-16 border-b border-[#e8ecee]">
+              <span className="font-serif text-[20px] text-[#06373A]">LUMINA SKIN</span>
+              <button onClick={() => setMobileOpen(false)} className="w-8 h-8 flex items-center justify-center rounded-lg text-[#555a5b] hover:bg-[#06373A]/8">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Drawer nav links */}
+            <nav className="flex-1 px-4 py-6 flex flex-col gap-1 overflow-y-auto">
+              {token ? (
+                <>
+                  {[
+                    { to: "/", label: "Home" },
+                    { to: "/products", label: "Products" },
+                    { to: "/orders", label: "Orders" },
+                    { to: "/addresses", label: "Addresses" },
+                    { to: "/profile", label: "Profile" },
+                  ].map(({ to, label }) => (
+                    <NavLink
+                      key={to}
+                      to={to}
+                      onClick={() => setMobileOpen(false)}
+                      className={({ isActive }) =>
+                        `flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium transition-colors ${
+                          isActive
+                            ? "bg-[#06373A]/10 text-[#06373A]"
+                            : "text-[#444748] hover:bg-[#06373A]/6 hover:text-[#06373A]"
+                        }`
+                      }
+                    >
+                      {label}
+                    </NavLink>
+                  ))}
+                  <div className="h-px bg-[#e8ecee] my-3" />
+                  <button
+                    onClick={() => { handleSignOut(); setMobileOpen(false); }}
+                    className="flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium text-red-500 hover:bg-red-50 transition-colors w-full text-left"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="currentColor" className="w-4 h-4">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
+                    </svg>
+                    Sign out
+                  </button>
+                </>
+              ) : (
+                <>
+                  {[
+                    { to: "/products", label: "Shop" },
+                    { to: "#", label: "Clinical Research" },
+                    { to: "#", label: "About" },
+                  ].map(({ to, label }) => (
+                    <NavLink
+                      key={label}
+                      to={to}
+                      onClick={() => setMobileOpen(false)}
+                      className="flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium text-[#444748] hover:bg-[#06373A]/6 hover:text-[#06373A] transition-colors"
+                    >
+                      {label}
+                    </NavLink>
+                  ))}
+                  <div className="h-px bg-[#e8ecee] my-3" />
+                  <NavLink
+                    to="/sign-in"
+                    onClick={() => setMobileOpen(false)}
+                    className="flex items-center justify-center px-3 py-3 rounded-lg text-sm font-semibold text-[#06373A] border border-[#06373A]/25 hover:bg-[#06373A]/6 transition-colors"
+                  >
+                    Sign In
+                  </NavLink>
+                  <NavLink
+                    to="/sign-up"
+                    onClick={() => setMobileOpen(false)}
+                    className="mt-2 flex items-center justify-center px-3 py-3 rounded-lg text-sm font-semibold bg-[#04362E] text-white hover:bg-[#03241e] transition-colors shadow-sm"
+                  >
+                    Create Account
+                  </NavLink>
+                </>
+              )}
+            </nav>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+
+// Desktop nav link with active indicator
+function DesktopNavLink({ to, children }) {
+  return (
+    <li>
+      <NavLink
+        to={to}
+        className={({ isActive }) =>
+          `relative px-4 py-2 text-sm font-medium rounded-lg transition-all ${
+            isActive
+              ? "text-white bg-white/15"
+              : "text-white/70 hover:text-white hover:bg-white/10"
+          }`
+        }
+      >
+        {children}
+      </NavLink>
+    </li>
+  );
+}
+
+// Logged-in desktop nav using NavItems
+function NavItemsDesktop() {
+  return (
+    <>
+      {[
+        { to: "/", label: "Home" },
+        { to: "/products", label: "Products" },
+        { to: "/orders", label: "Orders" },
+        { to: "/addresses", label: "Addresses" },
+      ].map(({ to, label }) => (
+        <DesktopNavLink key={to} to={to}>{label}</DesktopNavLink>
+      ))}
+    </>
   );
 }

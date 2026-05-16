@@ -7,30 +7,35 @@ import ProductList from "../products/ProductList";
 export default function LaboratoryFavorites() {
   const { isLoading, someProduct } = useLaboratoryFavorites();
   return (
-    <section className="bg-[#f9f9f9] py-16 md:py-24">
+    <section className="bg-white py-16 md:py-24">
       <div className="max-w-[1440px] px-6 lg:px-16 mx-auto">
-        <header className="flex flex-col md:flex-row justify-between items-start md:items-end flex-wrap gap-6 mb-12 md:mb-16">
+
+        {/* Section header */}
+        <header className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-12 md:mb-16">
           <div>
-            <h2 className="font-serif text-3xl md:text-[32px] text-black mb-2">
+            <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#06373A] mb-2 block">
+              Curated Formulations
+            </span>
+            <h2 className="font-serif text-[32px] md:text-[40px] text-[#06373A] mb-2">
               Laboratory Favorites
             </h2>
-            <p className="font-sans text-sm md:text-base text-[#444748] max-w-md">
+            <p className="text-[#555a5b] text-sm md:text-base max-w-md">
               Our most advanced formulations for transformative results, tested
               in rigorous clinical environments.
             </p>
           </div>
-          <div>
-            <Link
-              to="/products"
-              className="font-sans text-[10px] md:text-[11px] font-bold text-black border-b border-[#c4c7c7] md:border-black uppercase tracking-[0.2em] pb-1 hover:opacity-70 transition-opacity flex items-center gap-2"
-            >
-              VIEW ALL FORMULATIONS{" "}
-              <FontAwesomeIcon icon={faArrowRight} className="text-[10px]" />
-            </Link>
-          </div>
+          <Link
+            to="/products"
+            className="inline-flex items-center gap-2 text-sm font-medium text-[#04362E] border border-[#04362E]/30 rounded-lg px-5 py-2.5 hover:bg-[#04362E]/5 transition-colors whitespace-nowrap"
+          >
+            View All Formulations
+            <FontAwesomeIcon icon={faArrowRight} className="text-xs" />
+          </Link>
         </header>
+
         <ProductList allProduct={someProduct} isLoading={isLoading} />
       </div>
     </section>
   );
 }
+

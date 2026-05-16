@@ -3,95 +3,57 @@ import SignInForm from "../features/auth/SignInForm";
 
 export default function SignIn() {
   return (
-    <main className="min-h-screen pt-32 pb-20 flex items-center justify-center bg-[#F9F9F9]">
-      <div className="w-full max-w-[1440px] px-6 lg:px-16 mx-auto">
-        <div className="flex flex-col lg:flex-row bg-white overflow-hidden border border-[#c4c7c7] shadow-[0px_10px_30px_rgba(0,0,0,0.03)] rounded-lg md:rounded-none">
-          {/* Left: Visual Hero */}
-          <div className="w-full lg:w-1/2 relative bg-[#eeeeee] aspect-[4/3] lg:aspect-auto h-auto lg:min-h-[720px]">
-            <img
-              alt="Clinical Serum Bottle"
-              className="absolute inset-0 w-full h-full object-cover"
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuBPWZ19Ohgzf441uzHqtG8f-TWliwvXgYkt_8BgW4qbrA8dF9LtMAZyrcHWDx7JeMw1RRrOAEtxiA0M4wfm3pgI1vB781xMcroYaDk1KOj1gFk2sedD0VCZZHw54sKn5SB2rweX55RqgvBTK7KqFLeA45hFZtxcsIv3pnJ7sOR2uWlIjsFXkvr7x0a_WErqLex7JLl8p_ClD8U4upf7tdTHn_kCmMZLT1PLHiW3-CGx9LhCaxnzpKYg1c26zJTlO6fFO-1pRZ9McLAz"
-            />
-            {/* Overlay Content */}
-            <div className="absolute inset-0 bg-black/5 flex flex-col justify-center px-10 md:px-16">
-              <div className="mb-4">
-                <span className="font-sans text-[10px] md:text-[11px] font-bold text-white tracking-[0.3em] uppercase opacity-90">
-                  LUMIÈRE
-                </span>
-              </div>
-              <h1 className="font-serif text-[48px] md:text-[64px] lg:text-[72px] leading-[1.1] text-white mix-blend-difference mb-4">
-                Precision meets
-                <br />
-                <span className="italic font-normal">poetry.</span>
-              </h1>
-              <p className="font-sans text-sm md:text-base text-white/90 max-w-sm leading-relaxed mix-blend-difference">
-                Clinically proven results, curated through the lens of aesthetic
-                excellence.
-              </p>
-              <div className="absolute bottom-10 md:bottom-16 left-10 md:left-16 border-l border-white/40 pl-6">
-                <span className="font-sans text-[10px] font-bold text-white/80 tracking-[0.2em] uppercase">
-                  Clinical Excellence Series
-                </span>
-              </div>
+    <main className="min-h-screen flex flex-col items-center justify-center bg-[#f4f7f9] px-4 md:px-6 font-sans py-12">
+      
+      {/* Header Logo Area */}
+      <div className="text-center mb-6 md:mb-8 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
+        <h1 className="font-serif text-[32px] md:text-[40px] text-[#06373A] font-medium tracking-wide mb-1">
+          LUMINA SKIN
+        </h1>
+        <p className="text-[#555a5b] text-[10px] md:text-xs tracking-[0.2em] uppercase">
+          Science-meets-Beauty.
+        </p>
+      </div>
+
+      {/* Main Card */}
+      <div 
+        className="w-full max-w-[440px] bg-white rounded-xl shadow-[0px_8px_30px_rgba(0,0,0,0.04)] border border-[#e8ecee] p-6 md:p-10 animate-fade-in-up"
+        style={{ animationDelay: '0.2s' }}
+      >
+        <div className="text-center mb-6 md:mb-8">
+          <h2 className="font-serif text-[24px] md:text-[28px] text-[#06373A]">
+            Welcome Back
+          </h2>
+        </div>
+
+        <SignInForm />
+
+        <div className="mt-8 text-center animate-fade-in" style={{ animationDelay: '0.6s' }}>
+          <div className="relative flex items-center justify-center mb-6">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-200"></div>
             </div>
+            <span className="relative bg-white px-4 text-[13px] text-gray-500">
+              New to Lumina Skin?
+            </span>
           </div>
 
-          {/* Right: Sign In Form */}
-          <div className="w-full lg:w-1/2 bg-white flex flex-col justify-center p-8 md:p-16 lg:px-24">
-            <div className="max-w-md w-full mx-auto">
-              <div className="mb-10 lg:mb-12">
-                <h2 className="font-serif text-3xl md:text-[40px] text-black mb-3">
-                  Welcome Back
-                </h2>
-                <p className="font-sans text-base text-[#444748]">
-                  Access your personalized clinical regimen.
-                </p>
-              </div>
-
-              <SignInForm />
-
-              {/* Divider */}
-              <div className="relative my-8 lg:my-10 text-center">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-[#c4c7c7]"></div>
-                </div>
-                <div className="relative flex justify-center">
-                  <span className="bg-white px-4 font-sans text-[10px] text-[#747878] tracking-[0.2em] uppercase">
-                    OR
-                  </span>
-                </div>
-              </div>
-
-              <div className="text-center space-y-8">
-                <p className="font-sans text-sm text-[#444748]">
-                  New to Lumière?{" "}
-                  <Link
-                    to="/sign-up"
-                    className="text-black font-bold border-b border-black ml-1 pb-0.5"
-                  >
-                    Create Account
-                  </Link>
-                </p>
-
-                {/* Verification Badges */}
-                <div className="flex flex-wrap justify-center gap-4 pt-4">
-                  <div className="bg-[#f9f9f9] px-4 py-3 border border-[#e2e2e2]">
-                    <span className="font-sans text-[9px] md:text-[10px] font-bold text-[#444748] tracking-[0.15em] uppercase">
-                      Safe For All Skins
-                    </span>
-                  </div>
-                  <div className="bg-[#f9f9f9] px-4 py-3 border border-[#e2e2e2]">
-                    <span className="font-sans text-[9px] md:text-[10px] font-bold text-[#444748] tracking-[0.15em] uppercase">
-                      Dermatologist Verified
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <Link
+            to="/sign-up"
+            className="block w-full py-3 border border-[#04362E] text-[#04362E] font-medium rounded-lg hover:bg-[#f4f7f9] transition-colors text-sm"
+          >
+            Create an Account
+          </Link>
         </div>
       </div>
+
+      {/* Footer Links */}
+      <div className="mt-10 flex justify-center gap-6 text-xs text-gray-500 animate-fade-in" style={{ animationDelay: '0.7s' }}>
+        <Link to="#" className="hover:text-gray-800 transition-colors">Privacy</Link>
+        <Link to="#" className="hover:text-gray-800 transition-colors">Terms</Link>
+        <Link to="#" className="hover:text-gray-800 transition-colors">Help</Link>
+      </div>
+
     </main>
   );
 }

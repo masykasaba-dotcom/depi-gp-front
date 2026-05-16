@@ -9,7 +9,7 @@ export default function useLaboratoryFavorites() {
       `${apiUrl}products`,
       {
         params: {
-          limit: 3,
+          limit: 4,
           page: 1,
         },
       },

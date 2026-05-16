@@ -17,6 +17,8 @@ import UnAuthRoute from "../components/routing/UnAuthRoute";
 import TrackingOrder from "../pages/TrackingOrder";
 import Survey from "../pages/Survey";
 import UpdateSurvey from "../pages/UpdateSurvey";
+import ForgotPassword from "../pages/ForgotPassword";
+import ResetPassword from "../pages/ResetPassword";
 
 // Admin imports
 import AdminLayout from "../layouts/AdminLayout";
@@ -135,6 +137,22 @@ export const router = createBrowserRouter([
         element: (
           <UnAuthRoute>
             <SignUp />
+          </UnAuthRoute>
+        ),
+      },
+      {
+        path: "forgot-password",
+        element: (
+          <UnAuthRoute>
+            <ForgotPassword />
+          </UnAuthRoute>
+        ),
+      },
+      {
+        path: "reset-password",
+        element: (
+          <UnAuthRoute>
+            <ResetPassword />
           </UnAuthRoute>
         ),
       },
