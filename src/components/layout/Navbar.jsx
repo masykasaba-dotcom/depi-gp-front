@@ -3,6 +3,7 @@ import { Link, NavLink, useLocation } from "react-router";
 import { CartContext } from "../../context/CartContext";
 import useDarkMode from "../../hooks/useDarkMode";
 import useSignOut from "../../hooks/useSignOut";
+import logo from "../../assets/logo-removebg-preview.png";
 
 export default function Navbar() {
   const { darkMode, handleDarkMode } = useDarkMode();
@@ -40,7 +41,7 @@ export default function Navbar() {
             to="/"
             className={`font-serif text-[22px] tracking-wide no-underline flex-shrink-0 text-white ${!isSolid ? "drop-shadow-sm" : ""}`}
           >
-            LUMINA SKIN
+            <img src={logo} alt="DermaCare Logo" className="h-12 md:h-16 scale-110 w-auto object-contain brightness-0 invert drop-shadow-sm" />
           </Link>
 
           {/* ─── Center Nav — Desktop ─── */}
@@ -166,7 +167,7 @@ export default function Navbar() {
           <div className="absolute top-0 left-0 h-full w-72 bg-white dark:bg-[#0a1a18] shadow-xl flex flex-col animate-fade-in-up">
             {/* Drawer header */}
             <div className="flex items-center justify-between px-5 h-16 border-b border-[#e8ecee]">
-              <span className="font-serif text-[20px] text-[#06373A]">LUMINA SKIN</span>
+              <img src={logo} alt="DermaCare Logo" className="h-10 scale-110 w-auto object-contain" />
               <button onClick={() => setMobileOpen(false)} className="w-8 h-8 flex items-center justify-center rounded-lg text-[#555a5b] hover:bg-[#06373A]/8">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />

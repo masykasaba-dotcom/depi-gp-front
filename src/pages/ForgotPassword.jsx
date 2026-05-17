@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router";
 import apiUrl from "../lib/apiUrl";
 import axios from "axios";
+import logo from "../assets/logo-removebg-preview.png";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
@@ -34,9 +35,9 @@ export default function ForgotPassword() {
 
       {/* Logo */}
       <div className="mb-8 text-center animate-fade-in-up" style={{ animationDelay: "0.05s" }}>
-        <h1 className="font-serif text-[28px] md:text-[34px] text-[#06373A] font-medium tracking-wide">
-          LUMINA SKIN
-        </h1>
+        <div className="flex justify-center">
+          <img src={logo} alt="DermaCare Logo" className="h-16 md:h-20 w-auto object-contain" />
+        </div>
       </div>
 
       {/* Card */}

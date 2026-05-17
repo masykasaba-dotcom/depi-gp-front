@@ -1,6 +1,7 @@
 import { Link } from "react-router";
 import SignUpForm from "../features/auth/SignUpForm";
 import bgImage from "../assets/elsa-olofsson-Pm0K9Y3EPUc-unsplash.jpg";
+import logo from "../assets/logo-removebg-preview.png";
 
 export default function SignUp() {
   return (
@@ -12,7 +13,7 @@ export default function SignUp() {
         {/* LEFT — Image card */}
         <div className="relative h-full w-[55%] rounded-2xl overflow-hidden flex-shrink-0 shadow-lg">
           <img
-            alt="Lumina Skin Editorial"
+            alt="DermaCare Editorial"
             className="absolute inset-0 w-full h-full object-cover"
             src={bgImage}
           />
@@ -22,7 +23,7 @@ export default function SignUp() {
           {/* Bottom text */}
           <div className="absolute bottom-10 left-10 text-white">
             <span className="inline-block text-[9px] font-bold uppercase tracking-[0.25em] px-3 py-1 border border-white/40 bg-white/10 backdrop-blur-md rounded-sm mb-4">
-              LUMINA SKIN
+              <img src={logo} alt="DermaCare Logo" className="h-8 scale-150 w-auto object-contain brightness-0 invert" />
             </span>
             <h2 className="font-serif text-[32px] leading-snug">
               The science of <br />

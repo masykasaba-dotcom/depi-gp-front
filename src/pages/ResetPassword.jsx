@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useSearchParams, useNavigate } from "react-router";
 import apiUrl from "../lib/apiUrl";
 import axios from "axios";
+import logo from "../assets/logo-removebg-preview.png";
 
 function getStrength(password) {
   if (!password) return 0;
@@ -80,9 +81,9 @@ export default function ResetPassword() {
 
       {/* Logo */}
       <div className="mb-8 text-center animate-fade-in-up" style={{ animationDelay: "0.05s" }}>
-        <h1 className="font-serif text-[28px] md:text-[34px] text-[#06373A] font-medium tracking-wide">
-          LUMINA SKIN
-        </h1>
+        <div className="flex justify-center">
+          <img src={logo} alt="DermaCare Logo" className="h-16 md:h-20 w-auto object-contain" />
+        </div>
       </div>
 
       {/* Card */}
@@ -223,7 +224,7 @@ export default function ResetPassword() {
               <path strokeLinecap="round" strokeLinejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z" />
             </svg>
             Need help?{" "}
-            <a href="mailto:support@luminaskin.com" className="text-[#04362E] hover:underline font-medium">
+            <a href="mailto:support@dermacare.com" className="text-[#04362E] hover:underline font-medium">
               Contact Support
             </a>
           </p>

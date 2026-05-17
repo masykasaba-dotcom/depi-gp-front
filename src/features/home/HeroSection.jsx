@@ -7,7 +7,7 @@ export default function HeroSection() {
 
       {/* ─── Full-screen background image ─── */}
       <img
-        alt="Lumina Skin Clinical Serum Collection"
+        alt="DermaCare Clinical Serum Collection"
         className="absolute inset-0 w-full h-full object-cover object-center scale-105"
         src={heroImage}
       />

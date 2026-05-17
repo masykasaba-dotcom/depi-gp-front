@@ -1,5 +1,6 @@
 import { Link } from "react-router";
 import SignInForm from "../features/auth/SignInForm";
+import logo from "../assets/logo-removebg-preview.png";
 
 export default function SignIn() {
   return (
@@ -7,9 +8,9 @@ export default function SignIn() {
       
       {/* Header Logo Area */}
       <div className="text-center mb-6 md:mb-8 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
-        <h1 className="font-serif text-[32px] md:text-[40px] text-[#06373A] font-medium tracking-wide mb-1">
-          LUMINA SKIN
-        </h1>
+        <div className="flex justify-center mb-4">
+          <img src={logo} alt="DermaCare Logo" className="h-16 md:h-20 w-auto object-contain" />
+        </div>
         <p className="text-[#555a5b] text-[10px] md:text-xs tracking-[0.2em] uppercase">
           Science-meets-Beauty.
         </p>
@@ -34,7 +35,7 @@ export default function SignIn() {
               <div className="w-full border-t border-gray-200"></div>
             </div>
             <span className="relative bg-white px-4 text-[13px] text-gray-500">
-              New to Lumina Skin?
+              New to DermaCare?
             </span>
           </div>
 

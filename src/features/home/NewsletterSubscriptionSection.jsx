@@ -12,7 +12,7 @@ export default function NewsletterSubscriptionSection() {
         </h2>{" "}
         <p className="text-[#43474C] text-sm md:text-base leading-relaxed max-w-md mb-8">
           {" "}
-          Join the LUMIÈRE circle for exclusive access to scientific
+          Join the DermaCare circle for exclusive access to scientific
           breakthroughs, early product releases, and personalized skin
           analysis.{" "}
         </p>{" "}

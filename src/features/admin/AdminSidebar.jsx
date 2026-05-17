@@ -11,6 +11,7 @@ import {
   FolderTree,
 } from "lucide-react";
 import { useState } from "react";
+import logo from "../../assets/logo-removebg-preview.png";
 
 const navItems = [
   { to: "/admin", icon: LayoutDashboard, label: "Dashboard", end: true },
@@ -28,7 +29,7 @@ export default function AdminSidebar() {
     <aside className={`admin-sidebar ${collapsed ? "collapsed" : ""}`}>
       {/* Logo */}
       <div className="admin-sidebar__header">
-        {!collapsed && <span className="admin-sidebar__logo">LUMIÈRE</span>}
+        {!collapsed && <img src={logo} alt="DermaCare Admin" className="h-10 scale-125 w-auto object-contain" />}
         <button
           className="admin-sidebar__toggle"
           onClick={() => setCollapsed(!collapsed)}

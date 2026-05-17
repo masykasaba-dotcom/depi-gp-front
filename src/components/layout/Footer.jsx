@@ -1,4 +1,5 @@
 import { Link } from "react-router";
+import logo from "../../assets/logo-removebg-preview.png";
 
 export default function Footer() {
   return (
@@ -10,8 +11,8 @@ export default function Footer() {
           
           {/* Brand Info */}
           <div className="lg:col-span-5 flex flex-col items-start">
-            <Link to="/" className="font-serif text-[28px] text-white tracking-wide no-underline mb-6">
-              LUMINA SKIN
+            <Link to="/" className="inline-block mb-6">
+              <img src={logo} alt="DermaCare Logo" className="h-16 scale-110 w-auto object-contain brightness-0 invert" />
             </Link>
             <p className="text-white/70 text-sm leading-relaxed max-w-sm mb-8">
               Advanced dermatological science meets clean, potent botanicals. 
@@ -63,7 +64,7 @@ export default function Footer() {
         
         {/* Bottom Section: Copyright & Legal */}
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-white/50">
-          <p>© {new Date().getFullYear()} LUMINA SKIN. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} DERMACARE. All rights reserved.</p>
           <div className="flex items-center gap-6">
             <Link to="#" className="hover:text-white transition-colors">Privacy Policy</Link>
             <Link to="#" className="hover:text-white transition-colors">Terms of Service</Link>
