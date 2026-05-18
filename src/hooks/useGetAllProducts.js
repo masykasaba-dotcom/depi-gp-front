@@ -16,7 +16,7 @@ export default function useGetAllProducts() {
       `${apiUrl}products`,
       {
         params: {
-          limit: 9,
+          limit: 15,
           page: pageNumber,
           category,
           search,

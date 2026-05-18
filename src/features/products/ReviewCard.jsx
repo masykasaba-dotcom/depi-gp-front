@@ -14,78 +14,81 @@ export default memo(function ReviewCard({
   reviewId,
   refetch
 }) {
-  const { savedCustomerId,token } = useContext(AuthContext);
+  const { savedCustomerId, token } = useContext(AuthContext);
   const isOwner = customerId === savedCustomerId;
-  const ref = useRef()
+  const ref = useRef();
+  
   function startDeleteReview(){
-    ref.current.showModal()
+    ref.current.showModal();
   }
+  
   async function handleDeleteReview() {
     await axios.delete(`${apiUrl}reviews/${reviewId}`,{
       headers : {
         Authorization: `Bearer ${token}`,
       }
-    }).then(()=>refetch())
+    }).then(() => refetch());
   }
+
+  // Format date
+  const dateStr = createdAt ? new Date(createdAt).toLocaleDateString('en-US', {
+    year: 'numeric', month: 'short', day: 'numeric'
+  }) : '';
+
   return (
     <>
     <ConfirmModal ref={ref} onRemove={handleDeleteReview} />
-    <div className="relative rounded-2xl border border-base-300 bg-base-200/60 p-6 flex flex-col gap-4 hover:shadow-lg transition">
+    <div className="relative rounded-2xl border border-[#E8E4DE] bg-white p-6 hover:shadow-md transition-shadow">
       {/* OWN BADGE */}
       {isOwner && (
-        <span className="absolute top-3 right-3 text-[10px] bg-primary text-white px-2 py-1 rounded-full">
-          own
+        <span className="absolute top-4 right-4 text-[9px] bg-[#032b26] text-white px-2 py-1 uppercase tracking-wider font-bold rounded-sm">
+          Your Review
         </span>
       )}
 
-      {/* USER */}
-      <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-full bg-linear-to-br from-primary to-secondary flex items-center justify-center text-white font-bold">
-          {name[0]}
-        </div>
-
-        <div>
-          <p className="font-semibold text-base-content">{name}</p>
-          <p className="text-xs text-base-content/60">{createdAt}</p>
-        </div>
-      </div>
-
       {/* RATING */}
-      <div>
+      <div className="mb-3">
         <ReactStars
           count={5}
-          size={24}
-          color2={"#ffd700"}
+          size={18}
+          color1={"#E8E4DE"}
+          color2={"#06373A"}
           value={rating}
           edit={false}
         />
       </div>
 
-      {/* COMMENT */}
-      <p className="text-sm leading-relaxed text-base-content/80">{comment}</p>
+      {/* USER */}
+      <div className="flex items-center gap-3 mb-4">
+        <div className="w-8 h-8 rounded-full bg-[#E8EFF0] flex items-center justify-center text-[#06373A] font-bold text-xs uppercase">
+          {name?.[0]}
+        </div>
 
-      {/* FOOTER */}
-      <div className="flex justify-between items-center mt-2">
-        <span className="text-success flex items-center gap-1 text-xs font-medium">
-          <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-            <path
-              fillRule="evenodd"
-              d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-              clipRule="evenodd"
-            />
-          </svg>
-          Verified Purchase
-        </span>
-
-        {/* DELETE BUTTON */}
-        {isOwner && (
-          <button
-          onClick={startDeleteReview} 
-          className="text-xs px-3 py-1.5 rounded-lg bg-red-500 text-white  hover:bg-red-600 transition">
-            Delete
-          </button>
-        )}
+        <div>
+          <p className="font-semibold text-[#06373A] text-[13px]">{name}</p>
+          <div className="flex items-center gap-2">
+            <span className="text-[11px] text-[#555a5b]">{dateStr}</span>
+            <span className="text-[10px] text-[#06373A] font-bold uppercase tracking-wider bg-[#E8E4DE] px-1.5 rounded-sm">
+              Verified
+            </span>
+          </div>
+        </div>
       </div>
+
+      {/* COMMENT */}
+      <p className="font-body-md text-[13px] leading-relaxed text-[#555a5b] mb-4">{comment}</p>
+
+      {/* DELETE BUTTON */}
+      {isOwner && (
+        <div className="flex justify-end border-t border-[#E8E4DE] pt-3 mt-4">
+          <button
+            onClick={startDeleteReview} 
+            className="text-[11px] font-bold uppercase tracking-wider px-3 py-1.5 rounded text-red-600 hover:bg-red-50 transition-colors"
+          >
+            Delete Review
+          </button>
+        </div>
+      )}
     </div>
     </>
   );

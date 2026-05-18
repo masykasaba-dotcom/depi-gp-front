@@ -11,7 +11,11 @@ import Addresses from "../pages/Addresses";
 import Profile from "../pages/Profile";
 import Orders from "../pages/Orders";
 import OrderDetials from "../pages/OrderDetials";
+import OrderConfirmed from "../pages/OrderConfirmed";
 import ProductsPage from "../pages/ProductsPage";
+import CategoriesPage from "../pages/CategoriesPage";
+import PaymentMethods from "../pages/PaymentMethods";
+import Checkout from "../pages/Checkout";
 import AuthRoute from "../components/routing/AuthRoute";
 import UnAuthRoute from "../components/routing/UnAuthRoute";
 import TrackingOrder from "../pages/TrackingOrder";
@@ -29,6 +33,15 @@ import AdminOrders from "../features/admin/AdminOrders";
 import AdminCustomers from "../features/admin/AdminCustomers";
 import AdminSettings from "../features/admin/AdminSettings";
 
+import IngredientsGuide from "../pages/IngredientsGuide";
+import Wishlist from "../pages/Wishlist";
+import SurveyResult from "../pages/SurveyResult";
+import ContactSupport from "../pages/ContactSupport";
+import FAQs from "../pages/FAQs";
+import Blog from "../pages/Blog";
+import BlogPost from "../pages/BlogPost";
+import CMSPage from "../pages/CMSPage";
+
 export const router = createBrowserRouter([
   /* ─── Layout 1: Client (Navbar + Footer) ─── */
   {
@@ -43,11 +56,39 @@ export const router = createBrowserRouter([
           </AuthRoute>
         ),
       },
+      { path: "contact", element: <ContactSupport /> },
+      { path: "faqs", element: <FAQs /> },
+      { path: "blog", element: <Blog /> },
+      { path: "blog/:slug", element: <BlogPost /> },
+      { path: "about", element: <CMSPage pageKey="about" /> },
+      { path: "privacy-policy", element: <CMSPage pageKey="privacy_policy" /> },
+      { path: "terms", element: <CMSPage pageKey="terms" /> },
+      { path: "returns", element: <CMSPage pageKey="returns_policy" /> },
+      {
+        path: "survey-result",
+        element: (
+          <AuthRoute>
+            <SurveyResult />
+          </AuthRoute>
+        ),
+      },
+      {
+        path: "ingredients",
+        element: <IngredientsGuide />,
+      },
       {
         path: "products",
         element: (
           <AuthRoute>
             <ProductsPage />
+          </AuthRoute>
+        ),
+      },
+      {
+        path: "categories",
+        element: (
+          <AuthRoute>
+            <CategoriesPage />
           </AuthRoute>
         ),
       },
@@ -68,6 +109,14 @@ export const router = createBrowserRouter([
         ),
       },
       {
+        path: "checkout",
+        element: (
+          <AuthRoute>
+            <Checkout />
+          </AuthRoute>
+        ),
+      },
+      {
         path: "addresses",
         element: (
           <AuthRoute>
@@ -76,10 +125,26 @@ export const router = createBrowserRouter([
         ),
       },
       {
+        path: "payment-methods",
+        element: (
+          <AuthRoute>
+            <PaymentMethods />
+          </AuthRoute>
+        ),
+      },
+      {
         path: "profile",
         element: (
           <AuthRoute>
             <Profile />
+          </AuthRoute>
+        ),
+      },
+      {
+        path: "wishlist",
+        element: (
+          <AuthRoute>
+            <Wishlist />
           </AuthRoute>
         ),
       },
@@ -112,6 +177,14 @@ export const router = createBrowserRouter([
         element: (
           <AuthRoute>
             <OrderDetials />
+          </AuthRoute>
+        ),
+      },
+      {
+        path: "order-confirmed/:id",
+        element: (
+          <AuthRoute>
+            <OrderConfirmed />
           </AuthRoute>
         ),
       },

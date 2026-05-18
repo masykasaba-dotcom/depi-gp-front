@@ -89,6 +89,7 @@
   body {
     @apply bg-background text-on-background font-body-md;
     -webkit-font-smoothing: antialiased;
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
   
   h1, h2, h3, h4 {
@@ -104,8 +105,80 @@
   }
 }
 
+/* ─── DARK MODE ─────────────────────────────────────────────────────────── */
+:root[data-theme="dark"] {
+  /* Invert surfaces to dark */
+  --color-background:              #0f1a19;
+  --color-surface:                 #141f1d;
+  --color-surface-bright:          #1c2b29;
+  --color-surface-container:       #1a2725;
+  --color-surface-container-low:   #141f1d;
+  --color-surface-container-high:  #212e2c;
+  --color-surface-container-highest: #273533;
+  --color-surface-variant:         #1e2d2b;
+  --color-surface-dim:             #0c1615;
+
+  /* Text */
+  --color-on-background:           #d8e6e4;
+  --color-on-surface:              #d8e6e4;
+  --color-on-surface-variant:      #9ab5b1;
+  --color-on-secondary-container:  #b3c7c4;
+  --color-on-primary:              #0f1a19;
+  --color-on-secondary:            #0f1a19;
+  --color-on-tertiary:             #0f1a19;
+
+  /* Brand (keep teal family, just lighter shades) */
+  --color-primary:                 #a8d8d4;
+  --color-primary-container:       #1a3e3b;
+  --color-primary-fixed:           #1a3e3b;
+  --color-primary-fixed-dim:       #2a5552;
+  --color-inverse-primary:         #2a5552;
+  --color-on-primary-container:    #a8d8d4;
+  --color-on-primary-fixed:        #a8d8d4;
+  --color-on-primary-fixed-variant:#7db8b4;
+
+  /* Secondary */
+  --color-secondary:               #8aaba7;
+  --color-secondary-container:     #1a2e2c;
+  --color-secondary-fixed:         #1a2e2c;
+  --color-secondary-fixed-dim:     #2a3e3c;
+  --color-on-secondary-fixed:      #a8d8d4;
+  --color-on-secondary-fixed-variant: #7db8b4;
+
+  /* Tertiary */
+  --color-tertiary:                #c4e0dc;
+  --color-tertiary-container:      #162927;
+  --color-tertiary-fixed:          #162927;
+  --color-tertiary-fixed-dim:      #243e3c;
+  --color-on-tertiary-container:   #9ab5b1;
+  --color-on-tertiary-fixed:       #c4e0dc;
+  --color-on-tertiary-fixed-variant: #9ab5b1;
+
+  /* Borders & Outlines */
+  --color-outline:                 #3d5250;
+  --color-outline-variant:         #2a3e3c;
+
+  /* Error */
+  --color-error:                   #ffb4ab;
+  --color-error-container:         #5c1114;
+  --color-on-error:                #5c1114;
+  --color-on-error-container:      #ffb4ab;
+
+  /* Inverse */
+  --color-inverse-surface:         #d8e6e4;
+  --color-inverse-on-surface:      #141f1d;
+}
+
 .linen-border {
   border-color: #E8E4DE;
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
 }
 
 #StartQuizSection {

@@ -82,12 +82,32 @@ export default function useAddresses() {
         });
     },[token])
 
+    const handleSetDefaultAddress = useCallback(async function (id) {
+      await axios
+        .put(
+          `${apiUrl}addresses/${id}/default`,
+          null,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        )
+        .then(() => {
+          refetch();
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }, [token]);
+
     return{
       addresses,
       isLoading,
       isError,
       handleAddAddress,
       handleDeleteAddress,
-      handleUpdateAddress
+      handleUpdateAddress,
+      handleSetDefaultAddress,
     }
 }

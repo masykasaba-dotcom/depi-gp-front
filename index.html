@@ -7,6 +7,17 @@
     href="pngtree-leafy-silhouette-logo-for-womens-salon-and-skincare-vector-png-image_51594750.jpg" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>DermaCare</title>
+  <!-- Theme init: runs BEFORE React mounts to prevent flash -->
+  <script>
+    (function() {
+      try {
+        var theme = localStorage.getItem('dermacare-theme');
+        if (theme === 'dark') {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        }
+      } catch(e) {}
+    })();
+  </script>
 </head>
 
 <body>

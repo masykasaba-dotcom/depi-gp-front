@@ -4,7 +4,9 @@ import { CartContext } from "../context/CartContext";
 import ReviewsSection from "../features/products/ReviewsSection";
 import { Link } from "react-router";
 import useAddProduct from "../hooks/useAddProduct";
-import { Star, Beaker, Droplet, Leaf, PlayCircle } from "lucide-react";
+import { Heart, Star, Beaker, Droplet, Leaf, PlayCircle } from "lucide-react";
+import { useGetWishlist, useAddToWishlist, useRemoveFromWishlist } from "../hooks/useWishlist";
+import { toast } from "sonner";
 
 export default function ProductDetials() {
   const {
@@ -14,6 +16,13 @@ export default function ProductDetials() {
     isLoading,
     isError,
   } = useProductDetials();
+  
+  const { data: wishlistData } = useGetWishlist();
+  const { mutate: addToWishlist, isPending: isAdding } = useAddToWishlist();
+  const { mutate: removeFromWishlist, isPending: isRemoving } = useRemoveFromWishlist();
+  
+  const wishlistItems = wishlistData?.data || [];
+  const isInWishlist = productDetials ? wishlistItems.some(item => item.product_id === productDetials.product_id) : false;
   
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const addProduct = useAddProduct(selectedVariant?.variant_id);
@@ -155,9 +164,29 @@ export default function ProductDetials() {
                     : `Add to Bag — $${selectedVariant?.price || '0.00'}`
                   }
                 </button>
-                <button className="w-full bg-white border border-outline-variant rounded-[6px] text-primary py-[18px] font-body-md font-medium text-[15px] hover:border-[#032b26] transition-colors">
-                  Subscribe & Save 15%
-                </button>
+                <div className="flex gap-3 w-full">
+                  <button className="flex-1 bg-white border border-outline-variant rounded-[6px] text-primary py-[18px] font-body-md font-medium text-[15px] hover:border-[#032b26] transition-colors">
+                    Subscribe & Save 15%
+                  </button>
+                  <button 
+                    onClick={() => {
+                      if (!productDetials) return;
+                      if (isInWishlist) {
+                        removeFromWishlist(productDetials.product_id, {
+                          onSuccess: () => toast.success("Removed from Wishlist")
+                        });
+                      } else {
+                        addToWishlist(productDetials.product_id, {
+                          onSuccess: () => toast.success("Added to Wishlist")
+                        });
+                      }
+                    }}
+                    disabled={isAdding || isRemoving}
+                    className="w-[60px] flex-shrink-0 bg-white border border-outline-variant rounded-[6px] text-primary py-[18px] font-body-md font-medium text-[15px] hover:border-[#032b26] transition-colors flex items-center justify-center group disabled:opacity-50"
+                  >
+                    <Heart size={20} strokeWidth={2} className={isInWishlist ? "fill-error text-error" : "text-outline group-hover:text-error transition-colors"} />
+                  </button>
+                </div>
               </div>
 
               {/* Clinical Reveal (Features Card) */}

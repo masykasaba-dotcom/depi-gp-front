@@ -1,127 +1,146 @@
-import CustomInput from "../components/ui/CustomInput";
 import AddNewAddress from "../features/profile/AddNewAddress";
 import AddressCard from "../features/profile/AddressCard";
-import { useCallback, useState } from "react";
-import axios from "axios";
-import { use } from "react";
-import { AuthContext } from "../context/AuthContext";
-import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 import useAddresses from "../hooks/useAddresses";
+import AccountLayout from "../layouts/AccountLayout";
 
 export default function Addresses() {
-  const {addresses,handleAddAddress,handleDeleteAddress,handleUpdateAddress,isError,isLoading} = useAddresses()
+  const {
+    addresses,
+    handleAddAddress,
+    handleDeleteAddress,
+    handleUpdateAddress,
+    handleSetDefaultAddress,
+    isError,
+    isLoading
+  } = useAddresses();
+  
   const [showAddNewAddresse, setShowAddNewAddresse] = useState(false);
+
   function handleShowForm() {
     setShowAddNewAddresse((prevState) => !prevState);
   }
 
- 
   return (
-    <section className="bg-base-100 min-h-screen py-12">
-      <div className="mx-auto max-w-2xl px-4 md:px-8">
-        <header className="mb-10 flex flex-col md:flex-row md:items-end justify-between border-b border-base-300 pb-6">
+    <AccountLayout>
+      <div className="bg-white rounded-2xl border border-[#E8E4DE] p-6 lg:p-8 shadow-sm">
+        {/* Header Section */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-[#E8E4DE]/50 pb-6 mb-8">
           <div>
-            <h1 className="font-serif text-3xl font-light text-base-content md:text-4xl">
+            <h2 className="font-display-lg text-[22px] text-[#06373A] leading-tight mb-1.5">
               Saved Addresses
-            </h1>
-            <p className="mt-2 text-base-content/70">
-              Manage where we ship your orders.
+            </h2>
+            <p className="font-body-md text-[13px] text-on-secondary-container">
+              Manage your shipping and billing locations.
             </p>
           </div>
-        </header>
-
-        <div className="space-y-6">
-          {/* DEFAULT ADDRESS CARD */}
-          {isLoading && <AddressesSkeleton />}
-          {isError && <AddressesError />}
-          {addresses?.length === 0 && (
-            <p className=" text-md text-center py-4">
-              You haven’t added any addresses yet.
-            </p>
-          )}
-          {!isLoading &&
-            !isError &&
-            addresses.map((address) => (
-              <AddressCard
-                key={address.address_id}
-                id={address.address_id}
-                city={address.city}
-                country={address.country}
-                isDefault={address.is_default}
-                phone={address.phone}
-                state={address.state}
-                streetAddress={address.street_address}
-                zipCode={address.zip_code}
-                onDelete={handleDeleteAddress}
-                onUpdate={handleUpdateAddress}
-              />
-            ))}
-          {/* ADD ADDRESS PLACEHOLDER BUTTON */}
-          {addresses?.length < 5 && (
-            <div
-              onClick={handleShowForm}
-              className="rounded-2xl border border-base-300 bg-base-100 p-6 shadow-sm flex items-center justify-center border-dashed cursor-pointer hover:bg-base-200/50 transition"
-            >
-              <p className="text-sm font-medium text-base-content/70 flex items-center gap-2">
-                <span className="text-lg">+</span> Add New Address
-              </p>
-            </div>
-          )}
+          <button
+            onClick={handleShowForm}
+            className="flex items-center justify-center gap-2 px-5 py-2.5 bg-[#032b26] text-white hover:bg-[#06373A] text-xs font-semibold uppercase tracking-widest rounded-lg transition-colors whitespace-nowrap"
+          >
+            <span className="text-sm">+</span> Add New Address
+          </button>
         </div>
 
-        {/* ADD ADDRESS FORM SECTION */}
-        {showAddNewAddresse && addresses.length < 5 && (
-          <AddNewAddress onAddNewAddress={handleAddAddress} />
+        {/* Addresses list and grid */}
+        {isLoading && <AddressesSkeleton />}
+        {isError && <AddressesError />}
+
+        {!isLoading && !isError && (
+          <>
+            {addresses?.length === 0 && !showAddNewAddresse && (
+              <div className="text-center py-16 border border-dashed border-[#E8E4DE] rounded-2xl">
+                <p className="font-body-md text-[14px] text-on-secondary-container mb-4">
+                  You haven’t added any addresses yet.
+                </p>
+                <button
+                  onClick={handleShowForm}
+                  className="px-4 py-2 border border-[#06373A] text-[#06373A] hover:bg-[#06373A]/5 text-xs font-semibold rounded-lg uppercase tracking-wider transition-colors"
+                >
+                  Create Your First Address
+                </button>
+              </div>
+            )}
+
+            {addresses?.length > 0 && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                {addresses.map((address) => (
+                  <AddressCard
+                    key={address.address_id}
+                    id={address.address_id}
+                    city={address.city}
+                    country={address.country}
+                    isDefault={address.is_default}
+                    phone={address.phone}
+                    state={address.state}
+                    streetAddress={address.street_address}
+                    zipCode={address.zip_code}
+                    onDelete={handleDeleteAddress}
+                    onUpdate={handleUpdateAddress}
+                    onSetDefault={handleSetDefaultAddress}
+                  />
+                ))}
+
+                {/* Dotted "Add Another Address" Card */}
+                {addresses.length < 5 && (
+                  <div
+                    onClick={handleShowForm}
+                    className="rounded-2xl border border-dashed border-[#C9C6C5] bg-[#FAF9F6]/50 p-6 flex flex-col items-center justify-center text-center cursor-pointer hover:bg-[#06373A]/5 hover:border-[#06373A] transition duration-300 min-h-[220px]"
+                  >
+                    <div className="w-10 h-10 rounded-full bg-[#EAEAEA] flex items-center justify-center text-on-secondary-container mb-3 text-lg font-semibold">
+                      ➕
+                    </div>
+                    <p className="font-display-lg text-[14px] font-semibold text-[#06373A] mb-1">
+                      Add Another Address
+                    </p>
+                    <p className="font-body-md text-[11px] text-on-secondary-container">
+                      Save multiple locations for quicker checkout.
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
+          </>
+        )}
+
+        {/* Add Address Form Section */}
+        {showAddNewAddresse && (
+          <div className="border-t border-[#E8E4DE]/50 pt-8 mt-8 animate-fade-in-up">
+            <AddNewAddress onAddNewAddress={async (newAddr) => {
+              await handleAddAddress(newAddr);
+              setShowAddNewAddresse(false);
+            }} />
+          </div>
         )}
       </div>
-    </section>
+    </AccountLayout>
   );
 }
+
 function AddressesSkeleton() {
   return (
-    <div className="rounded-2xl border border-base-300 bg-base-200/50 p-6 shadow-sm animate-pulse">
-      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
-        {/* Left */}
-        <div className="space-y-3 w-full">
-          <div className="h-5 w-20 bg-base-300 rounded-full"></div>
-          <div className="h-5 w-40 bg-base-300 rounded"></div>
-          <div className="h-4 w-64 bg-base-300 rounded"></div>
-          <div className="h-4 w-48 bg-base-300 rounded"></div>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-pulse">
+      {Array.from({ length: 2 }).map((_, i) => (
+        <div key={i} className="rounded-2xl border border-[#E8E4DE] bg-white p-6 shadow-sm min-h-[200px]">
+          <div className="h-4 w-24 bg-[#EAEAEA] rounded mb-3" />
+          <div className="h-5 w-40 bg-[#EAEAEA] rounded mb-2" />
+          <div className="h-4 w-56 bg-[#EAEAEA] rounded mb-1" />
+          <div className="h-4 w-48 bg-[#EAEAEA] rounded" />
         </div>
-
-        {/* Right buttons */}
-        <div className="flex gap-4 sm:flex-col sm:gap-2">
-          <div className="h-4 w-10 bg-base-300 rounded"></div>
-          <div className="h-4 w-14 bg-base-300 rounded"></div>
-        </div>
-      </div>
+      ))}
     </div>
   );
 }
+
 function AddressesError() {
   return (
-    <div className="rounded-2xl border border-error/30 bg-error/10 p-6 shadow-sm">
-      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
-        {/* Left */}
-        <div>
-          <span className="badge badge-error badge-sm tracking-wide uppercase font-semibold mb-3">
-            Error
-          </span>
-
-          <p className="font-medium text-error text-lg mb-1">
-            Something went wrong
-          </p>
-
-          <p className="text-sm text-error/80">Failed to load address</p>
-        </div>
-
-        {/* Actions */}
-        <div className="flex gap-4 sm:flex-col sm:gap-2 text-xs font-semibold uppercase tracking-wider">
-          <button className="text-error hover:text-error/70 transition underline underline-offset-4">
-            Retry
-          </button>
-        </div>
-      </div>
+    <div className="rounded-2xl border border-red-200 bg-red-50 p-6 text-center">
+      <p className="font-display-lg text-[15px] font-semibold text-red-700 mb-1">
+        Failed to load addresses
+      </p>
+      <p className="font-body-md text-[13px] text-red-600">
+        Something went wrong. Please reload or try again later.
+      </p>
     </div>
   );
 }

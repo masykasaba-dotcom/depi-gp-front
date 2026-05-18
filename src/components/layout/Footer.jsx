@@ -36,27 +36,26 @@ export default function Footer() {
             <div className="flex flex-col gap-4">
               <h3 className="font-sans text-[11px] font-bold uppercase tracking-[0.2em] text-[#a8d5b5] mb-2">Shop</h3>
               <Link to="/products" className="text-sm text-white/70 hover:text-white transition-colors w-fit">All Formulations</Link>
-              <Link to="#" className="text-sm text-white/70 hover:text-white transition-colors w-fit">Best Sellers</Link>
-              <Link to="#" className="text-sm text-white/70 hover:text-white transition-colors w-fit">New Arrivals</Link>
+              <Link to="/ingredients" className="text-sm text-white/70 hover:text-white transition-colors w-fit">Ingredient Glossary</Link>
               <Link to="/profile/survey" className="text-sm text-white/70 hover:text-white transition-colors w-fit">Skin Quiz</Link>
+              <Link to="/survey-result" className="text-sm text-white/70 hover:text-white transition-colors w-fit">My Skin Dossier</Link>
             </div>
             
             {/* Column 2 */}
             <div className="flex flex-col gap-4">
-              <h3 className="font-sans text-[11px] font-bold uppercase tracking-[0.2em] text-[#a8d5b5] mb-2">Clinical</h3>
-              <Link to="#" className="text-sm text-white/70 hover:text-white transition-colors w-fit">Our Research</Link>
-              <Link to="#" className="text-sm text-white/70 hover:text-white transition-colors w-fit">Ingredient Glossary</Link>
-              <Link to="#" className="text-sm text-white/70 hover:text-white transition-colors w-fit">Dermatologist Panel</Link>
-              <Link to="#" className="text-sm text-white/70 hover:text-white transition-colors w-fit">Sustainability</Link>
+              <h3 className="font-sans text-[11px] font-bold uppercase tracking-[0.2em] text-[#a8d5b5] mb-2">Editorial</h3>
+              <Link to="/blog" className="text-sm text-white/70 hover:text-white transition-colors w-fit">Clinical Journal</Link>
+              <Link to="/about" className="text-sm text-white/70 hover:text-white transition-colors w-fit">About DermaCare</Link>
+              <Link to="/wishlist" className="text-sm text-white/70 hover:text-white transition-colors w-fit">My Wishlist</Link>
             </div>
             
             {/* Column 3 */}
             <div className="flex flex-col gap-4">
               <h3 className="font-sans text-[11px] font-bold uppercase tracking-[0.2em] text-[#a8d5b5] mb-2">Support</h3>
-              <Link to="#" className="text-sm text-white/70 hover:text-white transition-colors w-fit">FAQ</Link>
-              <Link to="#" className="text-sm text-white/70 hover:text-white transition-colors w-fit">Shipping & Returns</Link>
-              <Link to="#" className="text-sm text-white/70 hover:text-white transition-colors w-fit">Track Order</Link>
-              <Link to="#" className="text-sm text-white/70 hover:text-white transition-colors w-fit">Contact Us</Link>
+              <Link to="/faqs" className="text-sm text-white/70 hover:text-white transition-colors w-fit">FAQs</Link>
+              <Link to="/contact" className="text-sm text-white/70 hover:text-white transition-colors w-fit">Contact Us</Link>
+              <Link to="/returns" className="text-sm text-white/70 hover:text-white transition-colors w-fit">Returns Policy</Link>
+              <Link to="/orders" className="text-sm text-white/70 hover:text-white transition-colors w-fit">Track Order</Link>
             </div>
           </div>
 
@@ -66,8 +65,9 @@ export default function Footer() {
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-white/50">
           <p>© {new Date().getFullYear()} DERMACARE. All rights reserved.</p>
           <div className="flex items-center gap-6">
-            <Link to="#" className="hover:text-white transition-colors">Privacy Policy</Link>
-            <Link to="#" className="hover:text-white transition-colors">Terms of Service</Link>
+            <Link to="/privacy-policy" className="hover:text-white transition-colors">Privacy Policy</Link>
+            <Link to="/terms" className="hover:text-white transition-colors">Terms of Service</Link>
+            <Link to="/returns" className="hover:text-white transition-colors">Returns</Link>
           </div>
         </div>
 

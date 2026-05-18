@@ -98,7 +98,7 @@ export default function UpdateSurvey() {
         },
       )
       .then((data) => {
-        navigate("/profile");
+        navigate("/survey-result");
       })
       .catch((err) => {
         console.log(err.response);

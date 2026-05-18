@@ -1,28 +1,42 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+
+const STORAGE_KEY = "dermacare-theme";
+
+function applyTheme(theme) {
+  const root = document.documentElement;
+  if (theme === "dark") {
+    root.setAttribute("data-theme", "dark");
+  } else {
+    root.removeAttribute("data-theme");
+  }
+}
+
+// Read theme ONCE before React renders (avoids flash on load)
+const savedTheme = localStorage.getItem(STORAGE_KEY) || "light";
+applyTheme(savedTheme);
 
 export default function useDarkMode() {
-  const [darkMode, setDarkMode] = useState("light");
+  const [darkMode, setDarkMode] = useState(savedTheme);
+
   function handleDarkMode() {
-    if (localStorage.getItem("data-theme") === "dark") {
-      document.documentElement.setAttribute("data-theme", "");
-      localStorage.removeItem("data-theme");
-      setDarkMode("light");
-    } else {
-      document.documentElement.setAttribute("data-theme", "dark");
-      localStorage.setItem("data-theme", "dark");
-      setDarkMode("dark");
-    }
+    const next = darkMode === "dark" ? "light" : "dark";
+    applyTheme(next);
+    localStorage.setItem(STORAGE_KEY, next);
+    setDarkMode(next);
   }
 
+  // Keep in sync if localStorage changes in another tab
   useEffect(() => {
-    if (localStorage.getItem("data-theme") === "dark") {
-      document.documentElement.setAttribute("data-theme", "dark");
-      setDarkMode("dark");
+    function onStorage(e) {
+      if (e.key === STORAGE_KEY) {
+        const theme = e.newValue || "light";
+        applyTheme(theme);
+        setDarkMode(theme);
+      }
     }
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
   }, []);
 
-  return {
-    darkMode,
-    handleDarkMode,
-  };
+  return { darkMode, handleDarkMode };
 }

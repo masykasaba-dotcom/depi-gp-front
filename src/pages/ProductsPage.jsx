@@ -4,6 +4,20 @@ import { useState, useRef, useEffect } from "react";
 import useGetAllProducts from "../hooks/useGetAllProducts";
 import useGetCategories from "../hooks/useGetCategories";
 import ProductList from "../features/products/ProductList";
+import { Search, ChevronDown, ChevronLeft, ChevronRight, LayoutGrid, X } from "lucide-react";
+
+// Same theme map used in CategoriesPage for visual consistency
+const CATEGORY_THEMES = {
+  Serums:          { gradient: "from-[#0a2e2b] to-[#1a5c55]", icon: "💧" },
+  Moisturizers:    { gradient: "from-[#2d1b0e] to-[#6b3a1f]", icon: "🌿" },
+  Cleansers:       { gradient: "from-[#0d2b3e] to-[#1a5276]", icon: "✨" },
+  Masks:           { gradient: "from-[#1a0a2e] to-[#4a1c6b]", icon: "🌸" },
+  "Sun Protection":{ gradient: "from-[#2e2200] to-[#6b5000]",  icon: "☀️" },
+  "Eye Care":      { gradient: "from-[#0a2a2e] to-[#0d5460]", icon: "👁" },
+  Exfoliators:     { gradient: "from-[#2e1a0a] to-[#6b3d10]", icon: "🔬" },
+  Toners:          { gradient: "from-[#0e2e1a] to-[#1e5c36]", icon: "🌱" },
+};
+const DEFAULT_THEME = { gradient: "from-[#1a1a2e] to-[#2d2d4a]", icon: "✦" };
 
 export default function ProductsPage() {
   const {
@@ -25,7 +39,6 @@ export default function ProductsPage() {
   const [isSortOpen, setIsSortOpen] = useState(false);
   const sortRef = useRef(null);
 
-  // Close custom sort dropdown when clicking outside
   useEffect(() => {
     function handleClickOutside(event) {
       if (sortRef.current && !sortRef.current.contains(event.target)) {
@@ -37,216 +50,205 @@ export default function ProductsPage() {
   }, []);
 
   const sortOptions = [
-    { value: "-", label: "Sort by: Recommended" },
-    { value: "-25", label: "Price: Under $25" },
-    { value: "25-50", label: "Price: $25 - $50" },
-    { value: "50-", label: "Price: Over $50" },
+    { value: "-",     label: "Featured"        },
+    { value: "-25",   label: "Under $25"       },
+    { value: "25-50", label: "$25 – $50"       },
+    { value: "50-",   label: "Over $50"        },
   ];
 
   const currentSortValue = `${maxAndMinPrice.minPrice}-${maxAndMinPrice.maxPrice}`;
-  const currentSortLabel = sortOptions.find(opt => opt.value === currentSortValue)?.label || "Sort by: Recommended";
+  const currentSortLabel = sortOptions.find(o => o.value === currentSortValue)?.label || "Featured";
+
+  const activeCategoryObj = categories?.find(c => c.value === category);
+  const activeCategoryLabel = activeCategoryObj ? activeCategoryObj.label : "All Products";
 
   return (
-    <main className="max-w-[1440px] mx-auto px-5 lg:px-12 pt-28 pb-24 animate-fade-in-up">
-      {/* Breadcrumbs */}
-      <div className="flex items-center gap-2 text-[13px] text-[#555a5b] mb-10 font-sans">
+    <main className="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-12 lg:py-24 animate-fade-in">
+
+      {/* ── Breadcrumbs ── */}
+      <nav className="flex items-center gap-3 mb-10 font-label-caps text-[10px] text-on-secondary-container tracking-widest uppercase animate-fade-in-up">
         <Link to="/" className="hover:text-[#06373A] transition-colors">Home</Link>
-        <span className="text-[#a8d5b5]">›</span>
-        <span className="text-[#06373A] font-semibold">Shop All</span>
-      </div>
+        <span className="text-outline-variant">/</span>
+        <Link to="/categories" className="hover:text-[#06373A] transition-colors">Categories</Link>
+        <span className="text-outline-variant">/</span>
+        <Link to="/products" onClick={() => handleUpdateCategory("")} className="hover:text-[#06373A] transition-colors">Shop All</Link>
+        {category && (
+          <>
+            <span className="text-outline-variant">/</span>
+            <span className="text-[#06373A]">{activeCategoryLabel}</span>
+          </>
+        )}
+      </nav>
 
-      <div className="flex flex-col lg:flex-row gap-12 lg:gap-16">
-        
-        {/* ─── Left Sidebar (Filters) ─── */}
-        <aside className="w-full lg:w-64 flex-shrink-0">
-          <div className="lg:sticky lg:top-28">
-            
-            {/* Filter Header */}
-            <div className="flex items-center justify-between mb-8 pb-4 border-b border-[#e8ecee]">
-              <h2 className="font-sans text-[13px] font-bold tracking-[0.15em] text-[#06373A] uppercase">
-                Filters
-              </h2>
-              <button 
-                onClick={() => handleUpdateCategory("")}
-                className="text-[11px] font-semibold text-[#555a5b] uppercase hover:text-[#06373A] transition-colors tracking-wider"
-              >
-                Clear All
-              </button>
-            </div>
-
-            {/* Filter Group (Accordion style) */}
-            <div className="mb-8">
-              <button className="flex items-center justify-between w-full mb-5 group">
-                <h3 className="font-sans text-[14px] font-semibold text-[#06373A]">
-                  Category
-                </h3>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 text-[#555a5b] group-hover:text-[#06373A] transition-colors">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                </svg>
-              </button>
-              
-              <div className="flex flex-col gap-3.5">
-                {isCategoriesLoading ? (
-                  // Loading skeletons for categories
-                  Array.from({ length: 6 }).map((_, i) => (
-                    <div key={i} className="flex items-center gap-3">
-                      <div className="w-4 h-4 rounded-[3px] bg-[#e8ecee] animate-pulse"></div>
-                      <div className="h-3.5 bg-[#e8ecee] animate-pulse rounded w-24"></div>
-                    </div>
-                  ))
-                ) : (
-                  categories.map((item) => {
-                    const isActive = category === item.value;
-                    return (
-                      <label 
-                        key={item.label}
-                        className="flex items-center gap-3 cursor-pointer group"
-                      >
-                        <div className={`w-4 h-4 rounded-[3px] border flex items-center justify-center transition-colors ${isActive ? 'bg-[#04362E] border-[#04362E]' : 'border-[#d0d5d8] group-hover:border-[#04362E]'}`}>
-                          {isActive && (
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3 h-3 text-white">
-                              <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" />
-                            </svg>
-                          )}
-                        </div>
-                        <input 
-                          type="checkbox" 
-                          className="hidden"
-                          checked={isActive}
-                          onChange={() => handleUpdateCategory(isActive ? "" : item.value)}
-                        />
-                        <span className={`text-[14px] font-sans transition-colors flex items-center gap-1.5 ${isActive ? 'text-[#06373A] font-medium' : 'text-[#555a5b] group-hover:text-[#06373A]'}`}>
-                          {item.label} <span className="text-[#a1a5a6] text-[12px]">({item.count})</span>
-                        </span>
-                      </label>
-                    );
-                  })
-                )}
-              </div>
-            </div>
-
-          </div>
-        </aside>
-
-        {/* ─── Main Content Area ─── */}
-        <div className="flex-1 flex flex-col">
-          
-          {/* Header & Sort Controls */}
-          <header className="flex flex-col md:flex-row md:items-start justify-between gap-8 mb-10 pb-8 border-b border-[#e8ecee]">
-            <div className="max-w-2xl">
-              <h1 className="font-serif text-[32px] md:text-[40px] text-[#06373A] mb-4 leading-tight">
-                Shop All Skincare
-              </h1>
-              <p className="font-sans text-[15px] text-[#555a5b] leading-relaxed">
-                Clinically proven formulations engineered for optimal skin health. Discover our range of targeted treatments, daily essentials, and transformative complexes.
-              </p>
-            </div>
-
-            <div className="flex-shrink-0 flex flex-col gap-3 min-w-[220px]">
-              {/* Search Bar */}
-              <div className="relative">
-                <input
-                  onChange={(event) => handleSearch(event.target.value)}
-                  type="text"
-                  placeholder="Search products..."
-                  className="w-full h-11 pl-4 pr-10 border border-[#d0d5d8] rounded-lg bg-[#f4f7f9]/50 text-sm font-sans outline-none focus:border-[#04362E] focus:ring-1 focus:ring-[#04362E] transition-all"
-                  defaultValue={search}
-                />
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#a1a5a6]">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
-                </svg>
-              </div>
-
-              {/* Custom Sort Dropdown */}
-              <div className="relative" ref={sortRef}>
-                <button
-                  onClick={() => setIsSortOpen(!isSortOpen)}
-                  className={`w-full h-11 pl-4 pr-10 border rounded-lg bg-white text-[13px] font-sans font-medium text-[#06373A] outline-none transition-all flex items-center text-left ${isSortOpen ? 'border-[#04362E] ring-1 ring-[#04362E]' : 'border-[#d0d5d8]'}`}
-                >
-                  <span className="truncate">{currentSortLabel}</span>
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className={`absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#555a5b] transition-transform duration-200 ${isSortOpen ? 'rotate-180' : ''}`}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                  </svg>
-                </button>
-
-                {/* Dropdown Menu */}
-                {isSortOpen && (
-                  <div className="absolute z-20 w-full mt-2 bg-white border border-[#e8ecee] rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.05)] overflow-hidden animate-fade-in-up origin-top">
-                    <ul className="py-1">
-                      {sortOptions.map((option) => (
-                        <li key={option.value}>
-                          <button
-                            className={`w-full text-left px-4 py-2.5 text-[13px] font-sans transition-colors ${currentSortValue === option.value ? 'bg-[#f4f7f9] text-[#06373A] font-semibold' : 'text-[#555a5b] hover:bg-[#f4f7f9] hover:text-[#06373A]'}`}
-                            onClick={() => {
-                              const [min, max] = option.value.split("-");
-                              handleUpdatePrice(min, max);
-                              setIsSortOpen(false);
-                            }}
-                          >
-                            {option.label}
-                          </button>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </div>
-            </div>
-          </header>
-
-          {/* Active Filters Tag (Mockup style) */}
-          {category && (
-            <div className="flex items-center gap-3 mb-8">
-              <span className="text-[13px] font-medium text-[#555a5b]">Active Filters:</span>
-              <button 
-                onClick={() => handleUpdateCategory("")}
-                className="flex items-center gap-2 px-3 py-1.5 bg-[#f4f7f9] border border-[#d0d5d8] rounded-full text-[13px] font-medium text-[#06373A] hover:bg-[#e8ecee] transition-colors group"
-              >
-                {category}
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-3.5 h-3.5 text-[#a1a5a6] group-hover:text-[#06373A] transition-colors">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-              <button 
-                onClick={() => handleUpdateCategory("")}
-                className="text-[12px] text-[#555a5b] underline underline-offset-2 hover:text-[#06373A]"
-              >
-                Clear All
-              </button>
-            </div>
-          )}
-
-          {/* Product Grid */}
-          <div className="flex-1 min-h-[600px]">
-            <ProductList
-              maxPrice={maxAndMinPrice.maxPrice}
-              minPrice={maxAndMinPrice.minPrice}
-              allProduct={allProduct}
-              isLoading={isProductsLoading}
-            />
-          </div>
-
-          {/* Pagination */}
-          <ReactPaginate
-            breakLabel="..."
-            nextLabel={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>}
-            previousLabel={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg>}
-            onPageChange={handleUpdatePageNumber}
-            pageRangeDisplayed={3}
-            marginPagesDisplayed={1}
-            pageCount={pages}
-            forcePage={pageNumber - 1}
-            containerClassName="flex items-center justify-center gap-2 mt-20 pt-10 border-t border-[#e8ecee]"
-            pageClassName="w-10 h-10 flex items-center justify-center rounded-lg border border-transparent text-[14px] font-medium text-[#555a5b] hover:bg-[#f4f7f9] transition-colors cursor-pointer"
-            activeClassName="!bg-[#04362E] !text-white !border-[#04362E]"
-            previousClassName="w-10 h-10 flex items-center justify-center rounded-lg border border-[#e8ecee] text-[#555a5b] hover:bg-[#f4f7f9] transition-colors cursor-pointer"
-            nextClassName="w-10 h-10 flex items-center justify-center rounded-lg border border-[#e8ecee] text-[#555a5b] hover:bg-[#f4f7f9] transition-colors cursor-pointer"
-            breakClassName="px-2 text-[#a1a5a6]"
-            disabledClassName="opacity-40 cursor-not-allowed hover:bg-transparent"
-          />
+      {/* ── Page Header ── */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 animate-fade-in-up relative z-50" style={{ animationDelay: '0.05s' }}>
+        <div>
+          <p className="font-label-caps text-[10px] tracking-[0.3em] text-[#06373A] uppercase mb-3">
+            DermaCare Collection
+          </p>
+          <h1 className="font-display-lg text-[36px] md:text-[48px] text-[#06373A] leading-tight">
+            {activeCategoryLabel}
+          </h1>
         </div>
 
+        {/* Search + Sort row — top right */}
+        <div className="flex items-center gap-3 flex-shrink-0">
+          {/* Search */}
+          <div className="relative">
+            <input
+              onChange={(e) => handleSearch(e.target.value)}
+              type="text"
+              placeholder="Search..."
+              defaultValue={search}
+              className="w-[160px] md:w-[200px] h-10 pl-4 pr-9 border border-outline-variant/50 rounded-full bg-white text-[13px] font-body-md outline-none focus:border-[#06373A] focus:ring-1 focus:ring-[#06373A] transition-all"
+            />
+            <Search size={15} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-outline pointer-events-none" />
+          </div>
+
+          {/* Sort dropdown */}
+          <div className="relative z-50" ref={sortRef}>
+            <button
+              onClick={() => setIsSortOpen(!isSortOpen)}
+              className={`h-10 px-4 border rounded-full bg-white text-[13px] font-body-md font-medium text-[#06373A] flex items-center gap-2 transition-all ${isSortOpen ? 'border-[#06373A] ring-1 ring-[#06373A]' : 'border-outline-variant/50'}`}
+            >
+              <span>{currentSortLabel}</span>
+              <ChevronDown size={14} className={`text-outline transition-transform duration-200 ${isSortOpen ? 'rotate-180' : ''}`} />
+            </button>
+            {isSortOpen && (
+              <div className="absolute right-0 top-full mt-2 w-[160px] bg-white border border-outline-variant/30 rounded-xl shadow-lg overflow-hidden z-50">
+                <ul className="py-1.5">
+                  {sortOptions.map((opt) => (
+                    <li key={opt.value}>
+                      <button
+                        className={`w-full text-left px-4 py-2.5 text-[13px] font-body-md transition-colors ${currentSortValue === opt.value ? 'bg-[#f3f8f6] text-[#06373A] font-semibold' : 'text-on-secondary-container hover:bg-[#f3f8f6] hover:text-[#06373A]'}`}
+                        onClick={() => {
+                          const [min, max] = opt.value.split("-");
+                          handleUpdatePrice(min, max);
+                          setIsSortOpen(false);
+                        }}
+                      >
+                        {opt.label}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+
+          {/* Browse Categories link */}
+          <Link
+            to="/categories"
+            className="h-10 px-4 border border-outline-variant/50 rounded-full bg-white text-[13px] font-body-md font-medium text-[#06373A] flex items-center gap-2 hover:border-[#06373A] hover:bg-[#f3f8f6] transition-all whitespace-nowrap"
+          >
+            <LayoutGrid size={14} />
+            <span className="hidden md:inline">All Categories</span>
+          </Link>
+        </div>
       </div>
+
+      {/* ── Categories Mini-Grid (fully visible) ── */}
+      <div className="mb-10 animate-fade-in-up relative z-10" style={{ animationDelay: '0.1s' }}>
+        <div className="flex flex-wrap gap-2">
+          {/* All Products pill */}
+          <button
+            onClick={() => handleUpdateCategory("")}
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-[13px] font-body-md font-medium transition-all duration-200 ${
+              category === ""
+                ? "bg-[#032b26] text-white shadow-sm"
+                : "bg-white text-on-secondary-container border border-outline-variant/50 hover:border-[#06373A] hover:text-[#06373A]"
+            }`}
+          >
+            <span>All Products</span>
+          </button>
+
+          {/* Category pills with mini gradient dot */}
+          {!isCategoriesLoading && categories?.map((item) => {
+            const theme = CATEGORY_THEMES[item.label] || DEFAULT_THEME;
+            const isActive = category === item.value;
+            return (
+              <button
+                key={item.value}
+                onClick={() => handleUpdateCategory(item.value)}
+                className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-[13px] font-body-md font-medium transition-all duration-200 ${
+                  isActive
+                    ? "bg-[#032b26] text-white shadow-sm"
+                    : "bg-white text-on-secondary-container border border-outline-variant/50 hover:border-[#06373A] hover:text-[#06373A]"
+                }`}
+              >
+                {/* Mini gradient badge */}
+                <span className={`inline-block w-2 h-2 rounded-full bg-gradient-to-br ${theme.gradient} flex-shrink-0`} />
+                <span>{item.label}</span>
+              </button>
+            );
+          })}
+
+          {/* Loading skeleton pills */}
+          {isCategoriesLoading && Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="h-10 w-28 rounded-full bg-surface-container animate-pulse" />
+          ))}
+        </div>
+      </div>
+
+      {/* ── Divider + Active Filters ── */}
+      <div className="border-t border-outline-variant/30 pt-6 mb-8 flex items-center justify-between">
+        <p className="font-body-md text-[13px] text-on-secondary-container">
+          {isProductsLoading
+            ? "Loading products..."
+            : `${allProduct?.length || 0} products${category ? ` in ${activeCategoryLabel}` : ""}`}
+        </p>
+
+        {/* Active filter chips */}
+        <div className="flex items-center gap-2">
+          {category && (
+            <button
+              onClick={() => handleUpdateCategory("")}
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-[#032b26] text-white rounded-full text-[11px] font-medium"
+            >
+              {activeCategoryLabel}
+              <X size={11} />
+            </button>
+          )}
+          {search && (
+            <button
+              onClick={() => handleSearch("")}
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-surface-container border border-outline-variant/30 text-[#06373A] rounded-full text-[11px] font-medium hover:bg-surface-container-high transition-colors"
+            >
+              "{search}"
+              <X size={11} />
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* ── Product Grid ── */}
+      <div className="flex-1 min-h-[600px] relative z-0">
+        <ProductList
+          maxPrice={maxAndMinPrice.maxPrice}
+          minPrice={maxAndMinPrice.minPrice}
+          allProduct={allProduct}
+          isLoading={isProductsLoading}
+        />
+      </div>
+
+      {/* ── Pagination ── */}
+      <ReactPaginate
+        breakLabel="..."
+        nextLabel={<ChevronRight size={17} />}
+        previousLabel={<ChevronLeft size={17} />}
+        onPageChange={handleUpdatePageNumber}
+        pageRangeDisplayed={3}
+        marginPagesDisplayed={1}
+        pageCount={pages}
+        forcePage={pageNumber > 0 ? pageNumber - 1 : 0}
+        containerClassName="flex items-center justify-center gap-2 mt-20 pt-10 border-t border-outline-variant/30"
+        pageClassName="w-10 h-10 flex items-center justify-center rounded-[6px] border border-transparent text-[14px] font-body-md text-on-secondary-container hover:bg-surface-container transition-colors cursor-pointer"
+        activeClassName="!bg-[#032b26] !text-white !border-[#032b26]"
+        previousClassName="w-10 h-10 flex items-center justify-center rounded-[6px] border border-outline-variant/30 text-on-secondary-container hover:bg-surface-container transition-colors cursor-pointer"
+        nextClassName="w-10 h-10 flex items-center justify-center rounded-[6px] border border-outline-variant/30 text-on-secondary-container hover:bg-surface-container transition-colors cursor-pointer"
+        breakClassName="px-2 text-outline"
+        disabledClassName="opacity-40 cursor-not-allowed hover:bg-transparent"
+      />
     </main>
   );
 }

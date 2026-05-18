@@ -53,7 +53,14 @@ export default function OrderDetials() {
                           className="border-b hover:bg-base-200/50"
                         >
                           <td className="p-4 flex items-center gap-4">
-                            <div className="w-12 h-12 rounded bg-base-300 border shrink-0" />
+                            <div className="w-12 h-12 rounded overflow-hidden bg-base-300 border shrink-0">
+                              <img 
+                                src={item.variant?.product?.images?.[0]?.image_url || item.variant?.product?.image_url || item.variant?.image_url || "https://placehold.co/100x100?text=Product"} 
+                                alt={item.variant?.product?.product_name || "Product Image"}
+                                className="w-full h-full object-cover"
+                                onError={(e) => { e.target.src = "https://placehold.co/100x100?text=No+Image"; }}
+                              />
+                            </div>
                             <div>
                               <Link to={`/products/${item.variant?.product?.product_id}`} className="font-medium">
                                 {item.variant?.product?.product_name}
@@ -134,7 +141,7 @@ export default function OrderDetials() {
                 </div>
                 <Link
                   to="track"
-                  className="text-blue-700 ms-6 cursor-pointer hover:underline"
+                  className="text-primary ms-6 cursor-pointer hover:underline"
                 >
                   Track Your Package
                 </Link>

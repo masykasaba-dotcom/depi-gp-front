@@ -1,4 +1,4 @@
-import { useActionState } from "react";
+import { useActionState, useRef } from "react";
 import Question from "../features/profile/Question";
 import useGetSurvey from "../hooks/useGetSurvey";
 import axios from "axios";
@@ -6,115 +6,78 @@ import apiUrl from "../lib/apiUrl";
 import { use } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function Survey() {
   const { survey, isLoading } = useGetSurvey();
-  const {token} = use(AuthContext)
+  const { token } = use(AuthContext);
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const formRef = useRef(null);
 
-  const navigate = useNavigate()
   async function submitSurveyAction(prevState, formData) {
-    const skinType = formData.get("skin_type");
-    const sensitivityLevel = formData.get("sensitivity_level");
-    const concerns = formData.getAll("concerns");
-    const climate = formData.get("climate");
-    const routineComplexity = formData.getAll("routine_complexity");
+    if (!survey?.questions) return { errors: null };
 
-    let errors = [
-      {
-        error: false,
-      },
-      {
-        error: false,
-      },
-      {
-        error: false,
-      },
-      {
-        error: false,
-      },
-      {
-        error: false,
-      },
-    ];
+    // Build answers dynamically from real survey questions
+    const answers = [];
+    const errors = survey.questions.map(() => ({ error: false }));
+    const savedValues = survey.questions.map(() => ({ value: null }));
+    let hasError = false;
 
-    const savedValues = [
-      {
-        value: skinType,
-      },
-      {
-        value: sensitivityLevel,
-      },
-      {
-        value: concerns,
-      },
-      {
-        value: climate,
-      },
-      {
-        value: routineComplexity,
-      },
-    ];
-    if (!skinType) {
-      errors[0].error = true;
-    }
+    for (let i = 0; i < survey.questions.length; i++) {
+      const q = survey.questions[i];
+      let value;
 
-    if (concerns.length === 0) {
-      errors[2].error = true;
-    }
-
-    if (!climate) {
-      errors[3].error = true;
-    }
-
-    if (routineComplexity.length === 0) {
-      errors[4].error = true;
-    }
-
-    if (
-      errors[0].error ||
-      errors[2].error ||
-      errors[3].error ||
-      errors[4].error
-    ) {
-      return {
-        errors,
-        savedValues,
-      };
-    }
-    await axios.post(`${apiUrl}survey/submit`, {
-      answers: [
-        {
-          question_id: 1,
-          answer_value: skinType,
-        },
-        {
-          question_id: 2,
-          answer_value: sensitivityLevel === 0 ? 'Low' : sensitivityLevel === 1 ? 'Medium' : 'High',
-        },
-        {
-          question_id: 3,
-          answer_value: concerns,
-        },
-        {
-          question_id: 4,
-          answer_value: climate,
-        },
-        {
-          question_id: 5,
-          answer_value: routineComplexity,
-        },
-      ],
-    },{
-      headers : {
-        Authorization: `Bearer ${token}`,
+      if (q.question_type === "multiple_choice") {
+        value = formData.getAll(q.mapping_key);
+        savedValues[i].value = value;
+        if (value.length === 0) {
+          errors[i].error = true;
+          hasError = true;
+        }
+      } else if (q.question_type === "scale") {
+        // Convert numeric scale index to label string
+        const rawIndex = parseInt(formData.get(q.mapping_key) || "0");
+        value = q.options[rawIndex] || q.options[0];
+        savedValues[i].value = rawIndex;
+      } else {
+        value = formData.get(q.mapping_key);
+        savedValues[i].value = value;
+        if (!value) {
+          errors[i].error = true;
+          hasError = true;
+        }
       }
-    }).then(data => {
-      navigate('/profile')
-    }).catch(err => {
-      console.log(err.response)
-    });
+
+      if (value && (Array.isArray(value) ? value.length > 0 : true)) {
+        answers.push({
+          question_id: q.question_id,
+          answer_value: Array.isArray(value) ? value.join(",") : value,
+        });
+      }
+    }
+
+    if (hasError) {
+      return { errors, savedValues };
+    }
+
+    try {
+      await axios.post(
+        `${apiUrl}survey/submit`,
+        { answers },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      // Invalidate both profile and skin profile caches
+      queryClient.invalidateQueries({ queryKey: ["handleGetProfile"] });
+      queryClient.invalidateQueries({ queryKey: ["skinProfile"] });
+      navigate("/survey-result");
+    } catch (err) {
+      console.error(err.response?.data);
+    }
+
     return { errors: null };
   }
+
   const [formState, formAction, pending] = useActionState(submitSurveyAction, {
     errors: null,
   });
@@ -123,18 +86,18 @@ export default function Survey() {
     return <SkinQuizSkeleton />;
   }
   return (
-    <div className="min-h-screen bg-base-200 py-16 px-4">
-      <div className="mx-auto max-w-3xl bg-base-100 p-8 rounded-2xl shadow-md border border-base-300">
+    <div className="min-h-screen bg-[#FAF9F6] py-24 px-6">
+      <div className="mx-auto max-w-3xl bg-white p-8 lg:p-12 rounded-2xl shadow-sm border border-[#E8E4DE]">
         {/* HEADER */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-semibold">{survey.title}</h1>
-          <p className="text-sm text-base-content/60 mt-1">
-            Answer a few simple questions to understand your skin better.
+        <div className="mb-12 text-center">
+          <h1 className="font-display-lg text-[32px] text-[#06373A] mb-3">{survey.title}</h1>
+          <p className="font-body-md text-[14px] text-[#555a5b]">
+            Answer a few simple questions to understand your skin better and get personalized recommendations.
           </p>
         </div>
 
-        <form action={formAction} className="space-y-8">
-          {survey.questions.map((question) => (
+        <form action={formAction} className="space-y-12">
+          {survey.questions.map((question, index) => (
             <Question
               key={question.question_id}
               mappingKey={question.mapping_key}
@@ -144,24 +107,25 @@ export default function Survey() {
               options={question.options}
               error={
                 formState.errors &&
-                formState.errors[question.question_id - 1].error
+                formState.errors[index]?.error
               }
               defaultValue={
-                formState.errors &&
-                formState?.savedValues[question.question_id - 1].value
+                formState.savedValues &&
+                formState.savedValues[index]?.value
               }
             />
           ))}
 
           {/* BUTTON */}
-          <button
-            type="submit"
-            disabled={pending}
-            className="w-full mt-4 py-3 rounded-xl btn btn-neutral font-medium
-        hover:opacity-90 transition"
-          >
-            {pending ? 'Submiting...' : 'Submit'}
-          </button>
+          <div className="pt-8 border-t border-[#E8E4DE]">
+            <button
+              type="submit"
+              disabled={pending}
+              className="w-full py-4 rounded-xl bg-[#032b26] text-white font-semibold text-[13px] tracking-widest uppercase hover:bg-[#06373A] transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
+            >
+              {pending ? 'Submitting...' : 'Analyze My Skin'}
+            </button>
+          </div>
         </form>
       </div>
     </div>
@@ -170,53 +134,31 @@ export default function Survey() {
 
 function SkinQuizSkeleton() {
   return (
-    <div className="min-h-screen bg-base-200 py-16 px-4">
-      <div className="mx-auto max-w-2xl bg-base-100 p-8 rounded-2xl shadow-md border border-base-300 animate-pulse">
+    <div className="min-h-screen bg-[#FAF9F6] py-24 px-6">
+      <div className="mx-auto max-w-3xl bg-white p-8 lg:p-12 rounded-2xl shadow-sm border border-[#E8E4DE] animate-pulse">
         {/* HEADER */}
-        <div className="mb-8 space-y-3">
-          <div className="h-7 w-1/2 bg-base-300 rounded"></div>
-          <div className="h-4 w-2/3 bg-base-300 rounded"></div>
+        <div className="mb-12 text-center flex flex-col items-center">
+          <div className="h-8 w-64 bg-[#EAEAEA] rounded mb-4"></div>
+          <div className="h-4 w-96 bg-[#EAEAEA] rounded"></div>
         </div>
 
-        <div className="space-y-8">
-          {/* QUESTION 1 */}
-          <div className="space-y-3">
-            <div className="h-4 w-1/3 bg-base-300 rounded"></div>
-
-            <div className="space-y-2">
-              <div className="h-4 w-1/4 bg-base-300 rounded"></div>
-              <div className="h-4 w-1/3 bg-base-300 rounded"></div>
-              <div className="h-4 w-1/5 bg-base-300 rounded"></div>
+        <div className="space-y-12">
+          {[1, 2, 3].map(i => (
+            <div key={i} className="space-y-4">
+              <div className="h-6 w-1/2 bg-[#EAEAEA] rounded"></div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="h-14 w-full bg-[#EAEAEA] rounded-xl"></div>
+                <div className="h-14 w-full bg-[#EAEAEA] rounded-xl"></div>
+                <div className="h-14 w-full bg-[#EAEAEA] rounded-xl"></div>
+                <div className="h-14 w-full bg-[#EAEAEA] rounded-xl"></div>
+              </div>
             </div>
-          </div>
-
-          {/* QUESTION 2 */}
-          <div className="space-y-3">
-            <div className="h-4 w-1/2 bg-base-300 rounded"></div>
-            <div className="h-3 w-1/4 bg-base-300 rounded"></div>
-
-            <div className="space-y-2">
-              <div className="h-4 w-1/3 bg-base-300 rounded"></div>
-              <div className="h-4 w-1/4 bg-base-300 rounded"></div>
-              <div className="h-4 w-1/2 bg-base-300 rounded"></div>
-            </div>
-          </div>
-
-          {/* QUESTION 3 */}
-          <div className="space-y-4">
-            <div className="h-4 w-1/3 bg-base-300 rounded"></div>
-
-            <div className="h-2 w-full bg-base-300 rounded"></div>
-
-            <div className="flex justify-between">
-              <div className="h-3 w-10 bg-base-300 rounded"></div>
-              <div className="h-3 w-12 bg-base-300 rounded"></div>
-              <div className="h-3 w-10 bg-base-300 rounded"></div>
-            </div>
-          </div>
+          ))}
 
           {/* BUTTON */}
-          <div className="h-10 w-full bg-base-300 rounded-xl mt-4"></div>
+          <div className="pt-8 border-t border-[#E8E4DE]">
+            <div className="h-14 w-full bg-[#EAEAEA] rounded-xl"></div>
+          </div>
         </div>
       </div>
     </div>

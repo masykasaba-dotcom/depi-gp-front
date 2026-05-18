@@ -1,48 +1,71 @@
-import axios from "axios";
 import React from "react";
-import { use } from "react";
-import { Link, useNavigate } from "react-router";
-import { AuthContext } from "../../context/AuthContext";
-import { useActionState } from "react";
-import { CartContext } from "../../context/CartContext";
-import useMakeOrder from "../../hooks/useMakeOrder";
+import { Link } from "react-router";
+import { ArrowRight, Truck } from "lucide-react";
 
 export default function SubmitOrderForm({ cartProductLength, totalPrice }) {
-  const { formAction, pending } = useMakeOrder();
+  const isFreeShipping = totalPrice >= 150;
+  const shippingCost = isFreeShipping ? 0 : 15;
+  const grandTotal = totalPrice + shippingCost;
+
   return (
-    <form className="mt-10 flex flex-col gap-6 rounded-2xl border border-base-300 bg-base-200/50 p-6 md:flex-row md:items-start md:justify-between shadow-sm">
+    <div className="bg-white rounded-2xl border border-[#E8E4DE] p-6 shadow-sm flex flex-col justify-between">
       <div>
-        <p className="text-[10px] font-semibold uppercase tracking-widest text-primary">
+        <h3 className="font-display-lg text-[18px] text-[#06373A] leading-tight mb-6">
           Order Summary
-        </p>
-        <p className="mt-2 text-sm text-base-content/70">
-          Shipping and taxes calculated at next step.
-        </p>
-      </div>
-      <div className="text-right w-full md:w-auto">
-        <div className="border-b border-base-300 pb-4 mb-4">
-          <p className="text-sm text-base-content/70 flex justify-between md:justify-end gap-16">
-            Subtotal
-            <span className="font-medium tabular-nums text-base-content">
-              {totalPrice}
+        </h3>
+
+        {/* Breakdown */}
+        <div className="space-y-4 font-body-md text-[13px] text-on-secondary-container">
+          <div className="flex justify-between">
+            <span className="text-[#555a5b]">Subtotal</span>
+            <span className="font-semibold text-[#06373A] tabular-nums">${totalPrice}</span>
+          </div>
+
+          <div className="flex justify-between">
+            <span className="text-[#555a5b]">Shipping</span>
+            <span className="font-semibold text-[#06373A]">
+              {totalPrice === 0 ? "—" : isFreeShipping ? "Free" : `$${shippingCost}`}
             </span>
-          </p>
+          </div>
+
+          <div className="flex justify-between">
+            <span className="text-[#555a5b]">Taxes</span>
+            <span className="font-semibold text-[#06373A]">Calculated at checkout</span>
+          </div>
         </div>
-        {/* The user specifically asked NOT to add the checkout page, so we only provide the UI button */}
-        <button
-          disabled={cartProductLength === 0 || pending}
-          formAction={formAction}
-          className="btn btn-neutral w-full md:w-auto min-w-[200px]rounded-xl text-xs font-semibold uppercase tracking-[0.2em]"
-        >
-          {cartProductLength === 0 ? "there is no product" : "Procced"}
-        </button>
+
+        {/* Divider */}
+        <div className="h-px bg-[#E8E4DE] my-6" />
+
+        {/* Total */}
+        <div className="flex justify-between items-end mb-8">
+          <span className="font-display-lg text-[16px] text-[#06373A] leading-none">Total</span>
+          <span className="font-display-lg text-[22px] text-[#06373A] leading-none tracking-tight tabular-nums">
+            ${grandTotal}
+          </span>
+        </div>
+
+        {/* Checkout CTA */}
         <Link
-          to="/products"
-          className="mt-4 block text-center text-sm text-base-content/60 hover:text-primary transition no-underline md:text-right underline-offset-4"
+          to={cartProductLength > 0 ? "/checkout" : "#"}
+          className={`w-full h-12 flex items-center justify-center gap-2 rounded-lg text-xs font-semibold uppercase tracking-widest transition-colors ${
+            cartProductLength > 0
+              ? "bg-[#032b26] text-white hover:bg-[#06373A]"
+              : "bg-gray-100 text-gray-400 cursor-not-allowed"
+          }`}
         >
-          Continue shopping
+          <span>Checkout</span>
+          <ArrowRight size={14} />
         </Link>
       </div>
-    </form>
+
+      {/* Complimentary shipping guarantee */}
+      <div className="mt-6 bg-[#FAF9F6] border border-[#E8E4DE]/50 rounded-xl p-4 flex items-start gap-3">
+        <Truck size={18} className="text-[#06373A] shrink-0 mt-0.5" />
+        <p className="font-body-md text-[11px] leading-relaxed text-[#555a5b]">
+          Complimentary shipping on orders over $150. Returns accepted within 30 days.
+        </p>
+      </div>
+    </div>
   );
 }
