@@ -28,10 +28,14 @@ import ResetPassword from "../pages/ResetPassword";
 import AdminLayout from "../layouts/AdminLayout";
 import AdminDashboard from "../features/admin/AdminDashboard";
 import AdminProducts from "../features/admin/AdminProducts";
+import AdminAnalytics from "../features/admin/AdminAnalytics";
+import AdminEditProduct from "../features/admin/AdminEditProduct";
 import AdminCategories from "../features/admin/AdminCategories";
 import AdminOrders from "../features/admin/AdminOrders";
 import AdminCustomers from "../features/admin/AdminCustomers";
 import AdminSettings from "../features/admin/AdminSettings";
+import AdminLogin from "../features/admin/AdminLogin";
+import AdminRoute from "../components/routing/AdminRoute";
 
 import IngredientsGuide from "../pages/IngredientsGuide";
 import Wishlist from "../pages/Wishlist";
@@ -232,13 +236,26 @@ export const router = createBrowserRouter([
     ],
   },
 
-  /* ─── Layout 3: Admin Dashboard (Sidebar) ─── */
+  /* ─── Layout 3: Admin Login (standalone, no sidebar) ─── */
+  {
+    path: "/admin/login",
+    element: <AdminLogin />,
+  },
+
+  /* ─── Layout 4: Admin Dashboard (Sidebar) ─── */
   {
     path: "/admin",
-    element: <AdminLayout />,
+    element: (
+      <AdminRoute>
+        <AdminLayout />
+      </AdminRoute>
+    ),
     children: [
       { index: true, element: <AdminDashboard /> },
+      { path: "analytics", element: <AdminAnalytics /> },
       { path: "products", element: <AdminProducts /> },
+      { path: "products/new", element: <AdminEditProduct /> },
+      { path: "products/:id/edit", element: <AdminEditProduct /> },
       { path: "categories", element: <AdminCategories /> },
       { path: "orders", element: <AdminOrders /> },
       { path: "customers", element: <AdminCustomers /> },
