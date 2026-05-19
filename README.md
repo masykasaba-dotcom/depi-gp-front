@@ -1,76 +1,93 @@
-# LUMIÈRE Skincare Platform UI
+# DermaCare E-Commerce Platform Frontend
 
-Welcome to the frontend repository for the **LUMIÈRE Skincare Platform**. This is a modern, feature-rich Single Page Application (SPA) built to provide a premium, seamless, and personalized skincare shopping experience.
+Welcome to the frontend repository for the DermaCare Platform. This is a comprehensive Single Page Application (SPA) built to provide a premium skincare shopping experience and a robust administrative control panel.
 
-## 🚀 Project Overview
+## Project Overview
 
-The LUMIÈRE platform allows users to browse skincare products, receive personalized recommendations based on a skin survey, manage their shopping cart, and track orders. The UI is built with a strong focus on responsiveness, accessibility, and a beautiful dark/light mode toggle using DaisyUI and Tailwind CSS.
+DermaCare is divided into two primary interfaces:
+1. **Customer-Facing Storefront**: Allows users to browse skincare products, receive personalized recommendations based on a dynamic skin survey, manage their shopping cart, and track orders.
+2. **Administrative Dashboard**: A complete backend management suite featuring inventory tracking, order processing, customer profiles, CMS banner management, flash sales, and analytics.
 
-## 🛠️ Technology Stack
+Both interfaces are built with a strong focus on responsiveness, accessibility, and a cohesive dark/light mode design system using DaisyUI and Tailwind CSS.
 
-This project leverages modern frontend technologies for performance, maintainability, and rapid development:
+## Technology Stack
 
-- **Core Framework**: [React 19](https://react.dev/)
-- **Build Tool**: [Vite](https://vitejs.dev/)
-- **Routing**: [React Router v7](https://reactrouter.com/) for dynamic client-side routing.
+This project leverages modern frontend technologies for performance, maintainability, and scalability:
+
+- **Core Framework**: React 19
+- **Build Tool**: Vite
+- **Routing**: React Router v7 for dynamic client-side routing.
 - **State Management & Data Fetching**: 
-  - [React Query (@tanstack/react-query)](https://tanstack.com/query/latest) for efficient API caching and asynchronous state management.
-  - **Context API** (`AuthContext`, `CartContext`) for global UI state.
+  - React Query (@tanstack/react-query) for efficient API caching and asynchronous state management.
+  - Context API for global UI state.
 - **Styling & UI**: 
-  - [Tailwind CSS v4](https://tailwindcss.com/)
-  - [DaisyUI](https://daisyui.com/) for pre-designed, accessible components and built-in theming (Dark/Light modes).
-- **HTTP Client**: [Axios](https://axios-http.com/)
-- **Icons & Typography**: FontAwesome (`@fortawesome/react-fontawesome`)
-- **Notifications**: [Sonner](https://sonner.emilkowal.ski/) for elegant toast notifications.
-- **Linting**: ESLint
+  - Tailwind CSS v4
+  - DaisyUI for accessible components and built-in theming.
+  - Lucide React for consistent dashboard iconography.
+- **HTTP Client**: Axios
+- **Notifications**: Sonner for elegant toast notifications.
 
-## 📂 Project Structure
+## Project Architecture
 
-The project follows a modular and scalable folder structure inside the `src/` directory:
+The project has been heavily refactored to follow a Domain-Driven top-level directory structure inside the `src/` directory, separating concerns between the client and administrative applications:
 
 ```text
 src/
-├── assets/        # Static assets (images, logos, fonts)
-├── components/    # Reusable UI components
-│   ├── layout/    # Navbar, Footer, etc.
-│   ├── routing/   # AuthRoute, UnAuthRoute
-│   └── ui/        # Generic UI elements (Buttons, Inputs, etc.)
-├── context/       # Global Context Providers (AuthContext, CartContext)
-├── features/      # Feature-based modular components (auth, products, orders, home)
-├── hooks/         # Custom React hooks for shared logic
-├── layouts/       # Main page layout wrappers
-├── lib/           # Utility functions and API configuration (apiUrl.js)
-├── pages/         # Main route components (Views)
-├── router/        # Application router configuration
-├── App.jsx        # Application root and provider wrappers
-├── main.jsx       # React DOM entry point
-└── index.css      # Global styles, Tailwind directives, and design system tokens
+├── admin/         # Administrative Dashboard
+│   ├── components/  # Dashboard-specific UI components
+│   ├── hooks/       # Admin API mutations and queries
+│   ├── layouts/     # Dashboard sidebar and header layout
+│   └── pages/       # Management views (Inventory, Orders, Settings, etc.)
+│
+├── client/        # Customer-Facing Storefront
+│   ├── components/  # Storefront-specific UI components
+│   ├── features/    # Modular business logic (auth, cart, products, home)
+│   ├── hooks/       # Client API and state hooks
+│   ├── layouts/     # Main storefront layouts (Navbar, Footer)
+│   └── pages/       # Storefront views (Shop, Profile, Checkout, etc.)
+│
+├── shared/        # Shared Resources
+│   ├── components/  # Reusable UI elements (Buttons, Modals, Inputs)
+│   ├── contexts/    # Global Context Providers (Auth, Cart)
+│   └── utils/       # Shared utility functions and API configuration
+│
+├── routes/        # Application router configuration
+│   ├── admin.routes.jsx
+│   ├── client.routes.jsx
+│   └── index.jsx
+│
+├── styles/        # Global stylesheets and Tailwind directives
+└── assets/        # Static assets (images, logos, fonts)
 ```
 
-## ✨ Core Features
+## Core Features
 
-1. **User Authentication**: Secure Login and Registration flows, protected by custom `AuthRoute` and `UnAuthRoute` wrappers. JWT tokens are decoded using `jwt-decode`.
-2. **Personalized Skin Survey**: Users can fill out a skin-type survey (`Survey.jsx`) to receive tailored skincare recommendations (`RecommendationsProducts`).
-3. **Product Catalog & Search**: Browse a detailed list of products with pagination (via `react-paginate`) and view in-depth product details.
-4. **Shopping Cart Management**: Add, edit, or remove products. State is seamlessly managed globally via `CartContext` and persisted for a smooth experience.
-5. **Checkout & Address Management**: Users can manage multiple shipping addresses (`Addresses.jsx`, `AddNewAddress.jsx`) and submit orders.
-6. **Order Tracking & History**: Real-time order status tracking UI (`TrackingOrder.jsx`) and detailed order history (`Orders.jsx`).
-7. **Reviews & Ratings**: Integrated star ratings (`react-star-ratings`, `react-stars`) allowing users to submit and view product reviews.
-8. **Dark Mode**: Fully implemented native dark mode using DaisyUI themes that persist across sessions.
+### Client Storefront
+- **Authentication**: Secure Login and Registration flows protected by custom route wrappers.
+- **Personalized Skin Survey**: Users fill out a dynamic survey to receive tailored skincare recommendations.
+- **Product Catalog & Cart**: Browse products, view details, and manage shopping carts with global state persistence.
+- **Checkout & Orders**: Manage shipping addresses, submit orders securely, and track real-time order status.
 
-## ⚙️ Setup & Installation
+### Administrative Dashboard
+- **Catalog Management**: Full CRUD operations for products, categories, ingredients database, and inventory batches.
+- **Sales Processing**: Detailed order views, order status updates, and returns/refunds management.
+- **Customer CRM**: View customer profiles, order history, loyalty program tiers, and quiz analytics.
+- **Marketing Tools**: Manage promotional coupons, schedule flash sales, and configure CMS banners.
+- **System Configuration**: Manage SEO defaults, store details, payment gateways, and shipping rules.
+
+## Setup & Installation
 
 Follow these steps to set up the project locally.
 
 ### Prerequisites
 
-Ensure you have [Node.js](https://nodejs.org/) (v18+ recommended) and npm installed on your machine.
+Ensure you have Node.js (v18+ recommended) and npm installed on your machine.
 
 ### 1. Clone the repository
 
 ```bash
 git clone <repository-url>
-cd depi-gp
+cd depi-gp-front
 ```
 
 ### 2. Install Dependencies
@@ -94,9 +111,9 @@ VITE_API_URL="https://depi-gp-production.up.railway.app/api/"
 npm run dev
 ```
 
-The application will be running at `http://localhost:5173`. Vite provides Hot Module Replacement (HMR) for an instantaneous feedback loop during development.
+The application will be running at `http://localhost:5173`. Vite provides Hot Module Replacement (HMR) for rapid development.
 
-## 🏗️ Building for Production
+## Building for Production
 
 To build the application for production deployment:
 
@@ -104,18 +121,10 @@ To build the application for production deployment:
 npm run build
 ```
 
-This will bundle the React application and optimize it for maximum performance. The generated static files will be placed in the `dist/` directory, ready to be deployed to Vercel, Netlify, or any static hosting provider. The `vercel.json` file is already included for seamless Vercel deployments.
+This bundles the React application and optimizes it for maximum performance. The generated static files will be placed in the `dist/` directory, ready to be deployed to Vercel, Netlify, or any static hosting provider. 
 
 You can preview the production build locally by running:
 
 ```bash
 npm run preview
-```
-
-## 🧹 Linting & Code Quality
-
-This project uses ESLint to maintain code quality and enforce best practices. To run the linter:
-
-```bash
-npm run lint
 ```

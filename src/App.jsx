@@ -1,9 +1,9 @@
 import { RouterProvider } from "react-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import AuthContextProvider from "./context/AuthContext";
-import CartContextProvider from "./context/CartContext";
+import AuthContextProvider from "./client/contexts/AuthContext";
+import CartContextProvider from "./client/contexts/CartContext";
 import { Toaster } from "sonner";
-import { router } from "./router";
+import { router } from "./routes";
 
 const queryClient = new QueryClient();
 
